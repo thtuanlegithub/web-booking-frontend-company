@@ -1,0 +1,12 @@
+.welcome {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-heading-color);
+}
+
+.date-now {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-heading-color);
+}

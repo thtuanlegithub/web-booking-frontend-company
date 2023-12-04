@@ -1,0 +1,61 @@
+.dashboard-overview-bg {
+    background-color: var(--background-color-1);
+    border-radius: 10px;
+}
+
+.heading-color {
+    color: var(--text-heading-color);
+}
+
+.quick-overview {
+    background-color: var(--background-color-1);
+}
+
+.tour-planning-color {
+    background-color: rgba(48, 168, 242, 0.75);
+    color: rgba(48, 168, 242, 0.75);
+}
+
+.month-revenue-color {
+    background-color: #88D3B5;
+    color: #88D3B5;
+}
+
+.new-booking-color {
+    background-color: #EDAFB1;
+    color: #EDAFB1;
+}
+
+.customer-color {
+    background-color: #DDD26C;
+    color: #DDD26C;
+}
+
+.white-circle {
+    background-color: white;
+    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+}
+
+.most-booking-tour {
+    height: 100%;
+    background-color: white;
+    width: 100%;
+}
+
+.left-quick-report {
+    background-color: #528FB0;
+    color: white;
+    border-radius: 15px 0 0 15px;
+}
+
+.right-quick-report {
+    background-color: white;
+    color: var(--text-heading-color);
+    border-radius: 0px 15px 15px 0px;
+}
+
+.chart-booking {
+    background-color: var(--background-color-1);
+}

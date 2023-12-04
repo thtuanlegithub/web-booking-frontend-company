@@ -1,0 +1,13 @@
+.sidebar-menu {
+    background-color: var(--primary-color);
+}
+
+.sidebar-menu-btn:hover {
+    background-color: var(--nav-btn-hover-color);
+    text-decoration: none;
+}
+
+.sidebar-menu-active {
+    background-color: var(--nav-btn-hover-color);
+    text-decoration: none;
+}

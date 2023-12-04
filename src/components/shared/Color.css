@@ -1,0 +1,12 @@
+/* colors.css */
+:root {
+    --primary-color: #10528F;
+    --nav-btn-hover-color: #3977B0;
+    --text-heading-color: #0A53B2;
+    --background-color-1: rgba(178, 226, 237, 0.4);
+
+}
+
+
+
+/*  hover:bg-neutral-700 hover:no-underline hover:rounded-2xl active:bg-neutral-600 active:rounded-2xl  */
