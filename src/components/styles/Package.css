@@ -1,0 +1,7 @@
+.primary-button-color {
+    background-color: var(--primary-color);
+}
+
+.inter-font {
+    font-family: 'Inter', sans-serif;
+}

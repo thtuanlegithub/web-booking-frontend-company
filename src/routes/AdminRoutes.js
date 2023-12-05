@@ -1,15 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Dashboard from '../components/Dashboard';
-import Travel from '../components/Travel';
-import Tour from '../components/Tour';
-import Package from '../components/Package';
-import Promotion from '../components/Promotion'
-import Booking from '../components/Booking';
-import Customer from '../components/Customer';
-import Invoice from '../components/Invoice';
-import Login from '../components/Login';
-import Support from '../components/Support';
+import Dashboard from '../components/pages/Dashboard';
+import Travel from '../components/pages/Travel';
+import Tour from '../components/pages/Tour';
+import Package from '../components/pages/Package';
+import Promotion from '../components/pages/Promotion'
+import Booking from '../components/pages/Booking';
+import Customer from '../components/pages/Customer';
+import Invoice from '../components/pages/Invoice';
+import Login from '../components/pages/Login';
+import Support from '../components/pages/Support';
 import Layout from '../components/shared/Layout';
 function AdminRoutes(props) {
     return (

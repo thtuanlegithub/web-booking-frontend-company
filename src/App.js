@@ -4,9 +4,7 @@ import { ThemeProvider } from "@material-tailwind/react";
 
 function App(props) {
   return (
-    <ThemeProvider>
-      <AdminRoutes />
-    </ThemeProvider>
+    <AdminRoutes />
   );
 }
 

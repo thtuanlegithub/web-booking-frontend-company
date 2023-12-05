@@ -51,7 +51,7 @@
 }
 
 .right-quick-report {
-    background-color: white;
+    background-color: var(--background-color-1);
     color: var(--text-heading-color);
     border-radius: 0px 15px 15px 0px;
 }
