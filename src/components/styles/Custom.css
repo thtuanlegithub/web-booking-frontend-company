@@ -1,0 +1,17 @@
+.rounded-table-top-lg {
+    border-collapse: collapse;
+    border-radius: 1rem;
+}
+
+tr:first-child {
+    border-bottom-left-radius: 6px;
+}
+
+.btn-back {
+    background-color: var(--btn-back);
+    color: var(--primary-color);
+}
+
+.btn-back:hover {
+    background-color: #88D3E3;
+}

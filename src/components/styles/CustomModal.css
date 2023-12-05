@@ -1,0 +1,54 @@
+/* styles.css */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Màu nền đen với độ trong suốt */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    /* Đảm bảo nó ở trên cùng */
+}
+
+.modal-content {
+    /* Kiểu cho phần nội dung modal */
+    background-color: #fff;
+    /* Màu nền của phần nội dung modal */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.primary-button {
+    background-color: var(--text-heading-color);
+    color: white;
+    cursor: pointer;
+}
+
+.package-modal {
+    min-width: 10rem;
+    min-height: 10rem;
+}
+
+.btn-green {
+    background-color: var(--primary-green);
+    color: white;
+    cursor: pointer;
+}
+
+.btn-green:hover {
+    background-color: var(--hover-green);
+}
+
+.btn-red {
+    background-color: var(--primary-red);
+    color: white;
+    cursor: pointer;
+}
+
+.btn-red:hover {
+    background-color: var(--hover-red);
+}

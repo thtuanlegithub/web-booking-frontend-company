@@ -4,12 +4,12 @@ import { MdOutlineModeOfTravel } from "react-icons/md";
 import { HiOutlineLogout } from "react-icons/hi";
 import { DASHBOARD_BOTTOM_LINKS, DASHBOARD_SIDEBAR_LINKS } from '../../lib/consts/navigation';
 import { Link, useLocation } from 'react-router-dom';
-import './Color.css';
-import './Sidebar.css'
+import '../styles/Color.css';
+import '../styles/Sidebar.css';
 const linkClasses = 'flex items-center gap-2 font-regular mx-2 px-3 py-3 text-lg hover:no-underline hover:rounded-2xl sidebar-menu-btn'
 function Sidebar(props) {
     return (
-        <div className='flex flex-col sidebar-menu w-72 p-3 text-white'>
+        <div className='flex flex-col sidebar-menu w-64 p-3 text-white'>
             <div className='flex items-center place-content-center gap-2 px-1'>
                 <span className='text-white text-2xl pt-2 font-bold'>Tour Management</span>
             </div>

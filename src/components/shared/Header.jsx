@@ -1,6 +1,6 @@
 import React from 'react';
 import { HiOutlineBell, HiOutlineChatAlt, HiOutlineSearch } from 'react-icons/hi';
-import './Header.css'
+import '../styles/Header.css'
 function Header(props) {
     const getMonthName = (monthIndex) => {
         const months = [

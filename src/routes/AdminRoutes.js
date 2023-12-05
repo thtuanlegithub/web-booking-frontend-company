@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from '../components/pages/Dashboard';
 import Travel from '../components/pages/Travel';
-import Tour from '../components/pages/Tour';
+import Tour from '../components/pages/Tour/Tour';
+import CRUDTour from '../components/pages/Tour/CRUDTour';
 import Package from '../components/pages/Package';
 import Promotion from '../components/pages/Promotion'
 import Booking from '../components/pages/Booking';
@@ -19,7 +20,9 @@ function AdminRoutes(props) {
                     <Route path='/' element={<Layout />}>
                         <Route index element={<Dashboard />}></Route>
                         <Route path='package' element={<Package />}></Route>
-                        <Route path='tour' element={<Tour />}></Route>
+                        <Route path='tour' element={<Tour />}>
+                            <Route path='create-tour' element={<CRUDTour />}></Route>
+                        </Route>
                         <Route path='travel' element={<Travel />}></Route>
                         <Route path='promotion' element={<Promotion />}></Route>
                         <Route path='booking' element={<Booking />}></Route>
