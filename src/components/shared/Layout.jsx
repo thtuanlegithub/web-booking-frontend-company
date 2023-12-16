@@ -5,11 +5,11 @@ import Sidebar from './Sidebar';
 function Layout(props) {
     return (
         <div>
-            <div className='flex flex-row h-screen'>
+            <div className='flex h-full'>
                 <Sidebar />
                 <div className='flex-1'>
                     <Header />
-                    <div className='p-4'><Outlet /></div>
+                    <div className='p-4 h-screen'><Outlet /></div>
                 </div>
             </div>
         </div>

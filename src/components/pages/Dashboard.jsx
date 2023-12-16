@@ -11,7 +11,7 @@ function Dashboard(props) {
     const [numberCancelBooking, setNumberCancelBooking] = useState(7);
     const [moneyRefund, setMoneyRefund] = useState(7400000);
     return (
-        <div className='dashboard'>
+        <div className='dashboard max-h-full overflow-y-auto'>
             <div className='dashboard-overview-bg px-8 pt-4 pb-8 mx-4 drop-shadow-lg'>
                 <div className='font-bold text-2xl heading-color'>Dashboard</div>
                 <div className='heading-color text-lg font-regular'>A quick data overview of the Tour Management.</div>

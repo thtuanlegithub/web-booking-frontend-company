@@ -3,12 +3,10 @@ import { Link } from 'react-router-dom';
 import '../../styles/Custom.css';
 import { FaAngleDoubleLeft } from 'react-icons/fa';
 import { Autocomplete, TextField, Button } from '@mui/material';
-import Select from '@mui/material/Select';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
 import { FaCalendarDay } from "react-icons/fa";
 import { PACKAGE_ADDRESSES } from '../../../lib/consts/packageAddresses';
 import { useState } from 'react';
+import ImageUploader from '../../custom/ImageUploader';
 const TOURSCHEDULE = [
     [""]];
 const itemData = [
@@ -137,13 +135,14 @@ function CreateTour(props) {
         });
     };
     return (
-        <div className='flex flex-col' >
+        <div className='flex flex-col max-h-full overflow-y-auto' >
             <Link to='/tour' className='w-64 mb-4 text-md heading-color font-semibold btn-back p-2 cursor-pointer rounded-lg'>
                 <FaAngleDoubleLeft className='inline mr-2' />
                 <div className='inline'>Back to Tour Management</div>
             </Link>
-            <div className='flex flex-wrap gap-4'>
-                <div className='flex-1 border border-blue-500 px-8 py-4 rounded-lg'>
+            <div className='inline text-2xl heading-color font-bold text-center mb-4'>Create Tour</div>
+            <div className='flex flex-wrap xl:gap-8 gap-4'>
+                <div className='flex-1 border border-blue-500 2xl:px-16 px-8 py-4 rounded-lg'>
                     <div className='text-lg font-semibold heading-color text-center'>Tour General Information</div>
                     <div className='mt-4'>
                         <TextField fullWidth label='Tour name' placeholder='Enter tour name' required />
@@ -180,60 +179,63 @@ function CreateTour(props) {
                             />
                         </div>
                     </div>
-                    <div>
-                        <img className='' src='./netherlands.jpg' />
+                    <div className='mt-4'>
+                        <ImageUploader />
                     </div>
+                    {/* <img className='mt-4 cursor-pointer' src='./ImgPlaceholder.png' /> */}
                 </div>
                 <div className='flex-1 border border-blue-500 px-8 py-4 rounded-lg'>
-                    <div className='text-lg font-semibold heading-color text-center'>Tour Schedule</div>
+                    <div className='text-lg font-semibold heading-color text-center '>Tour Schedule</div>
                     <div className='mt-2'>
                         {tourSchedule.map((day, dayIndex) => (
-                            <div className='mb-8' key={dayIndex}>
-                                <div className='flex flex-row items-center mb-4'>
-                                    <div className='mr-4 text-lg font-semibold'>
-                                        <FaCalendarDay className='inline mr-2 mb-1' />
-                                        {`Day ${dayIndex + 1}`}
-                                    </div>
-                                    <TextField
-                                        size='small'
-                                        label={`Day Summary`}
-                                        value={daySummaries[dayIndex]}
-                                        onChange={(e) => handleDaySummaryChange(dayIndex, e.target.value)}
-                                    />
-                                    <Button className='!normal-case !bg-red-300 !ml-2' variant="contained" color="secondary" onClick={(e) => handleRemoveDay(dayIndex, e.target.value)}>
-                                        Remove day
-                                    </Button>
-                                </div>
-                                {day.map((packageItem, packageIndex) => (
-                                    <div className='mt-6' key={packageIndex}>
-                                        <div className='flex flex-row flex-wrap gap-2'>
-                                            <Autocomplete
-                                                className='flex-1 ml-4'
-                                                size='small'
-                                                key={packageItem} // Thêm key vào đây
-                                                value={packageItem}
-                                                options={['Package1.1', 'Package1.2', 'Package2.1', 'Package2.2', 'Package3.1', 'Package3.2']}
-                                                onChange={(event, newValue) => handlePackageChange(dayIndex, packageIndex, newValue)}
-                                                renderInput={(params) => (
-                                                    <TextField
-                                                        {...params}
-                                                        label={`Package ${packageIndex + 1}`}
-
-                                                    />
-                                                )}
-                                            />
-                                            <Button className='!normal-case !bg-red-300' variant="contained" color="secondary" onClick={() => handleRemovePackage(dayIndex, packageIndex)}>
-                                                Remove
-                                            </Button>
-                                            <Button className='!normal-case !bg-blue-300' variant="contained" color="primary" onClick={() => handleMovePackage(dayIndex, packageIndex, 'up')}>
-                                                Up
-                                            </Button>
-                                            <Button className='!normal-case !bg-blue-300' variant="contained" color="primary" onClick={() => handleMovePackage(dayIndex, packageIndex, 'down')}>
-                                                Down
-                                            </Button>
+                            <div className='rounded-lg border border-blue-500 px-4 py-2 mb-4'>
+                                <div className='mb-8' key={dayIndex}>
+                                    <div className='flex flex-row items-center mb-4 mt-2'>
+                                        <div className='mr-4 text-lg font-semibold'>
+                                            <FaCalendarDay className='inline mr-2 mb-1' />
+                                            {`Day ${dayIndex + 1}`}
                                         </div>
+                                        <TextField
+                                            size='small'
+                                            label={`Day Summary`}
+                                            value={daySummaries[dayIndex]}
+                                            onChange={(e) => handleDaySummaryChange(dayIndex, e.target.value)}
+                                        />
+                                        <Button className='!normal-case !bg-red-300 !ml-2' variant="contained" color="secondary" onClick={(e) => handleRemoveDay(dayIndex, e.target.value)}>
+                                            Remove day
+                                        </Button>
                                     </div>
-                                ))}
+                                    {day.map((packageItem, packageIndex) => (
+                                        <div className='mt-6' key={packageIndex}>
+                                            <div className='flex flex-row flex-wrap gap-2'>
+                                                <Autocomplete
+                                                    className='flex-1 ml-4'
+                                                    size='small'
+                                                    key={packageItem} // Thêm key vào đây
+                                                    value={packageItem}
+                                                    options={['Package1.1', 'Package1.2', 'Package2.1', 'Package2.2', 'Package3.1', 'Package3.2']}
+                                                    onChange={(event, newValue) => handlePackageChange(dayIndex, packageIndex, newValue)}
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            label={`Package ${packageIndex + 1}`}
+
+                                                        />
+                                                    )}
+                                                />
+                                                <Button className='!normal-case !bg-red-300' variant="contained" color="secondary" onClick={() => handleRemovePackage(dayIndex, packageIndex)}>
+                                                    Remove
+                                                </Button>
+                                                <Button className='!normal-case !bg-blue-300' variant="contained" color="primary" onClick={() => handleMovePackage(dayIndex, packageIndex, 'up')}>
+                                                    Up
+                                                </Button>
+                                                <Button className='!normal-case !bg-blue-300' variant="contained" color="primary" onClick={() => handleMovePackage(dayIndex, packageIndex, 'down')}>
+                                                    Down
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                                 <Button className='!normal-case !my-2 !ml-4 !bg-blue-500' variant="contained" color="primary" onClick={() => handleAddPackage(dayIndex)}>
                                     Add Package to Day
                                 </Button>
@@ -247,7 +249,11 @@ function CreateTour(props) {
                     </div>
                 </div>
             </div>
-
+            <div className='flex justify-center'>
+                <Button className='!bg-green-500 !normal-case w-64 !bg-green-300 !mt-8 !mb-8' variant="contained">
+                    Save
+                </Button>
+            </div>
         </div>
     );
 }
