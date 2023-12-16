@@ -4,7 +4,7 @@ import { Input, InputField, Button } from "@material-tailwind/react";
 import { FaLock, FaUser } from 'react-icons/fa';
 function Login(props) {
     return (
-        <div className='login-container 2xl:w-1/3 lg:w-1/2 login-background m-auto mt-24 p-12 rounded-2xl shadow-lg'>
+        <div className='login-container container 2xl:w-1/3 lg:w-1/2 login-background m-auto mt-24 p-12 rounded-2xl shadow-lg'>
             <div className='heading-color font-bold text-2xl text-center'>Welcome to Tour Management!</div>
             <div className='heading-color font-regular text-lg text-center'>Please log in to use the service!</div>
             <div className="mt-4 w-72 m-auto">

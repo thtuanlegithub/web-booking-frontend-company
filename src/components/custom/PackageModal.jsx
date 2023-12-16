@@ -1,7 +1,11 @@
-import React from 'react';
 import Modal from 'react-modal';
-import Select from 'react-select'
+import Select from 'react-select';
+import React, { useEffect } from 'react';
+import { useState } from 'react';
+import { PACKAGE_TYPES } from '../../lib/consts/packageTypes';
+import { PACKAGE_ADDRESSES } from '../../lib/consts/packageAddresses';
 import '../styles/CustomModal.css';
+
 const customStyles = {
     content: {
         top: '35%',
@@ -14,72 +18,205 @@ const customStyles = {
     },
 };
 function PackageModal(props) {
-    const title = props.title;
-    const [modalIsOpen, setIsOpen] = React.useState(false);
+    // Modal - Open - Close - Process
+    const [modalIsOpen, setIsOpen] = React.useState(props.displayModal);
     function openModal() {
         setIsOpen(true);
     }
-
+    function closeModal() {
+        // setIsOpen(false);
+        props.onCloseModal();
+    }
     function afterOpenModal() {
         // references are now sync'd and can be accessed.
+
     }
 
-    function closeModal() {
 
-        setIsOpen(false);
+    // Package Name
+    const [packageName, setPackageName] = useState("");
+    const [packageType, setPackageType] = useState(null);
+    const [packageAddress, setPackageAddress] = useState(null);
+    const [packageDescription, setPackageDescription] = useState("");
+    // Clear Input
+    const clearInput = () => {
+        setPackageName("");
+        setPackageType(null);
+        setPackageAddress(null);
+        setPackageDescription("");
     }
+    useEffect(() => {
+        if (props.action === 'UPDATE') {
+            setPackageName(props.packageData.packageName);
+            setPackageType({ label: props.packageData.packageType, value: props.packageData.packageType });
+            setPackageAddress({ label: props.packageData.packageAddress, value: props.packageData.packageAddress });
+            setPackageDescription(props.packageData.packageDescription);
+        }
+        else {
+            clearInput();
+        }
+    }, [props.packageData, props.action])
+
+    // Handle Input
+    const handlePackageName = (event) => {
+        setPackageName(event.target.value);
+    }
+    const handlePackageDescription = (event) => {
+        setPackageDescription(event.target.value);
+    }
+    const handlePackageType = (selectedOption) => {
+        if (selectedOption === null) {
+            setPackageType(null);
+        }
+        else {
+            setPackageType(selectedOption);
+        }
+
+    }
+    const handlePackageAddress = (selectedOption) => {
+        if (selectedOption === null) {
+            setPackageAddress(null);
+        }
+        else {
+            setPackageAddress(selectedOption);
+        }
+    }
+
+
+
+    // Validate input
+    const validateInput = () => {
+        if (packageType == null) {
+            packageType.value = "";
+        }
+        if (packageAddress == null) {
+            packageAddress.value = "";
+        }
+        return true;
+    }
+    const handleUpdatePackage = async () => {
+        // validate input
+        if (validateInput()) {
+            const packageData = {
+                id: props.packageData.id,
+                packageName: packageName,
+                packageType: packageType.value,
+                packageAddress: packageAddress.value,
+                packageDescription: packageDescription
+            }
+            props.onUpdatePackage(packageData);
+            clearInput();
+            closeModal();
+        }
+        else {
+            // open warning dialog
+        }
+    }
+    const handleCreatePackage = async () => {
+        // validate input
+        if (validateInput()) {
+            const packageData = {
+                packageName: packageName,
+                packageType: packageType.value,
+                packageAddress: packageAddress.value,
+                packageDescription: packageDescription
+            }
+            props.onCreatePackage(packageData);
+            clearInput();
+            closeModal();
+        }
+        else {
+            // open warning dialog
+        }
+    }
+    // Select Input
+    const [isClearable, setIsClearable] = useState(true);
+    const [isSearchable, setIsSearchable] = useState(true);
+    const [isDisabled, setIsDisabled] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+
     return (
         <div>
-            <input className='primary-button p-2 rounded-lg text-md font-medium px-6 float-right' type='button' onClick={openModal} value='Add package' />
             <Modal
-                isOpen={modalIsOpen}
+                appElement={document.getElementById('root')}
+                isOpen={props.displayModal}
                 onAfterOpen={afterOpenModal}
                 onRequestClose={closeModal}
                 contentLabel="Example Modal"
                 overlayClassName="modal-overlay"
                 style={customStyles}
             >
-                <form className='mx-4'>
-                    <div className='heading-color text-lg font-bold block text-center'>{title}</div>
+                <form className='mx-8 my-4'>
+                    <div className='heading-color text-xl font-bold block text-center'>
+                        {props.action === 'CREATE' ? 'Create Package' : 'Update Package'}
+                    </div>
                     <div className="mt-4 w-96 m-auto">
-                        <label className='text-blue-800 font-medium text-sm' htmlFor='packageName'>Package Name</label>
+                        <label className='text-blue-800 font-medium text-md' htmlFor='packageName'>Package Name</label>
                         <div className="relative flex w-full flex-wrap items-stretch mt-1">
-                            <input autoComplete='off' id='packageName' type="text" placeholder="Enter package name" className="py-3 placeholder-blue-200 text-blue-800 relative bg-white bg-white rounded-lg text-sm border border-blue-500 outline-none focus:outline-none focus:ring-2 w-full pl-4 font-medium" required />
+
+                            <input autoComplete='off'
+                                value={packageName}
+                                onChange={handlePackageName}
+                                maxLength={100}
+                                id='packageName'
+                                type="text"
+                                placeholder="Enter package name"
+                                className="py-3 placeholder:font-normal placeholder-gray-500 relative bg-white bg-white rounded-lg text-md border border-gray-400 outline-none focus:border-blue-500 focus:border-2 w-full pl-4" required />
                         </div>
                     </div>
                     <div className='flex flex-row'>
                         <div className="mt-4 w-44 m-auto">
-                            <label className='text-blue-800 font-medium text-sm' htmlFor='packageType'>Package Type</label>
+                            <label className='text-blue-800 font-medium text-md' htmlFor='packageType'>Package Type</label>
                             <div className="relative flex w-full flex-wrap items-stretch mt-1">
-                                <select id='packageType' className="py-3 placeholder-blue-200 text-blue-800 relative bg-white bg-white rounded-lg text-sm border border-blue-500 outline-none focus:outline-none focus:ring-2 w-full pl-4 font-medium" >
-                                    <option className='py-10' value="" disabled selected>- Select type -</option>
-                                    <option className='py-10' value="Tham quan">Tham quan</option>
-                                    <option className='py-10' value="Tham quan">Tham quan</option>
-                                    <option className='py-10' value="Tham quan">Tham quan</option>
-                                </select>
+                                < Select
+                                    value={packageType}
+                                    onChange={handlePackageType}
+                                    className="basic-single text-md w-64"
+                                    classNamePrefix="select"
+                                    defaultValue="=Select-"
+                                    isDisabled={isDisabled}
+                                    isLoading={isLoading}
+                                    isClearable={isClearable}
+                                    isSearchable={isSearchable}
+                                    name="PackageType"
+                                    options={PACKAGE_TYPES}
+                                />
                             </div>
                         </div>
                         <div className="mt-4 ml-4 w-48 m-auto">
-                            <label className='text-blue-800 font-medium text-sm' htmlFor='packageAddress'>Package Address</label>
+                            <label className='text-blue-800 font-medium text-md' htmlFor='packageCity'>Package Address</label>
                             <div className="relative flex w-full flex-wrap items-stretch mt-1">
-                                <select id='packageAddress' className="py-3 placeholder-blue-200 text-blue-800 relative bg-white bg-white rounded-lg text-sm border border-blue-500 outline-none focus:outline-none focus:ring-2 w-full pl-4 font-medium" >
-                                    <option className='py-10' value="" disabled selected>- Select city -</option>
-                                    <option className='py-10' value="Tham quan">Đà Lạt</option>
-                                    <option className='py-10' value="Tham quan">Đà Nẵng</option>
-                                    <option className='py-10' value="Tham quan">Thành phố Hồ Chí Minh</option>
-                                </select>
+                                < Select
+                                    value={packageAddress}
+                                    onChange={handlePackageAddress}
+                                    className="basic-single text-md w-64"
+                                    classNamePrefix="select"
+                                    defaultValue="=Select-"
+                                    isDisabled={isDisabled}
+                                    isLoading={isLoading}
+                                    isClearable={isClearable}
+                                    isSearchable={isSearchable}
+                                    name="packageAddress"
+                                    options={PACKAGE_ADDRESSES}
+
+                                />
                             </div>
                         </div>
                     </div>
                     <div className="mt-4 w-96 m-auto">
-                        <label className='text-blue-800 font-medium text-sm' htmlFor='packageDescription'>Package Description</label>
+                        <label className='text-blue-800 font-medium text-md' htmlFor='packageDescription'>Package Description</label>
                         <div className="relative flex w-full flex-wrap items-stretch mt-1">
-                            <textarea rows="4" style={{ resize: "none" }} autoComplete='off' id='packapackageDescriptiongeName' type="text" placeholder="Enter package description" className="py-3 placeholder-blue-200 text-blue-800 relative bg-white bg-white rounded-lg text-sm border border-blue-500 outline-none focus:outline-none focus:ring-2 w-full pl-4 font-medium" />
+                            <textarea
+                                value={packageDescription}
+                                onChange={handlePackageDescription}
+                                rows="4" style={{ resize: "none" }} autoComplete='off' id='packapackageDescriptiongeName' type="text" placeholder="Enter package description"
+                                className="py-3 placeholder:font-normal placeholder-gray-500 relative bg-white bg-white rounded-lg text-md border border-gray-400 outline-none focus:border-blue-500 focus:border-2 w-full pl-4" />
                         </div>
                     </div>
                     <div className='flex flex-row justify-between'>
                         <input className='btn-red mt-4 p-2 rounded-lg text-md font-medium px-6 float-left' type='button' value='Close' onClick={closeModal} />
-                        <input className='btn-green mt-4 p-2 rounded-lg text-md font-medium px-6 float-right' type='submit' value='Save' />
+                        <input className='btn-green mt-4 p-2 rounded-lg text-md font-medium px-6 float-right' type='button' value='Save' onClick={props.action === 'CREATE' ? handleCreatePackage : handleUpdatePackage} />
                     </div>
                 </form>
             </Modal>

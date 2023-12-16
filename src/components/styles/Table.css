@@ -1,7 +1,6 @@
 table {
     border-collapse: separate;
     border-spacing: 0;
-    width: 100%;
 }
 
 table tr th,
@@ -10,6 +9,12 @@ table tr td {
     border-bottom: 1px solid rgba(2, 62, 138, 0.15);
     padding: 5px;
     color: var(--text-heading-color);
+    white-space: nowrap;
+    /* Ngăn cách quá trình quấn văn bản vào dòng mới */
+    overflow: hidden;
+    /* Ngăn văn bản bị tràn khi vượt quá giới hạn chiều rộng */
+    text-overflow: ellipsis;
+    /* Hiển thị dấu "..." khi văn bản bị cắt bớt */
 }
 
 table tr th:first-child,

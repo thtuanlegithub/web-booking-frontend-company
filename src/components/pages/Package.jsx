@@ -1,48 +1,77 @@
-import React from 'react';
 import '../styles/Package.css';
-import { FaPlusCircle } from 'react-icons/fa';
-import { Button } from '@material-tailwind/react';
+import React, { useEffect, useState, useRef } from 'react';
 import PackageTable from '../custom/PackageTable';
 import PackageModal from '../custom/PackageModal';
+import { createPackage, updatePackage, deletePackage, fetchAllPackage } from '../../services/packageServices';
+import handleDeletePackage from '../custom/PackageTable';
+// import ReactPaginate from 'react-paginate';
+import Pagination from '@mui/material/Pagination';
+const TABLE_HEADS = ['No.', 'Package Name', 'Package Type', 'Address'];
 function Package(props) {
-    const TABLE_HEADS = ['Id', 'Package Name', 'Package Type', 'Address'];
-    const TABLE_ROWS = [{
-        id: 1,
-        packageName: 'Tham quan vườn hoa Đà Lạt',
-        packageType: 'Tham quan',
-        packageAddress: 'Đà Lạt'
-    },
-    {
-        id: 1,
-        packageName: 'Tham quan vườn hoa Đà Lạt',
-        packageType: 'Tham quan',
-        packageAddress: 'Đà Lạt'
-    },
-    {
-        id: 2,
-        packageName: 'Tham quan vườn hoa Đà Lạt',
-        packageType: 'Tham quan',
-        packageAddress: 'Đà Lạt'
-    },
-    {
-        id: 3,
-        packageName: 'Tham quan vườn hoa Đà Lạt',
-        packageType: 'Tham quan',
-        packageAddress: 'Đà Lạt'
-    },
-    {
-        id: 4,
-        packageName: 'Tham quan vườn hoa Đà Lạt',
-        packageType: 'Tham quan',
-        packageAddress: 'Đà Lạt'
-    },
-    ]
+    const [isDisplayModal, setIsDisplayModal] = useState(false);
+    const [listPackage, setListPackage] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [currentLimit, setCurrentLimit] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
+    const [actionPackageModal, setActionPackageModal] = useState("CREATE");
+    const [selectedPackage, setSelectedPackage] = useState({});
+    useEffect(() => {
+        fetchPackages();
+    }, [currentPage]);
+    const fetchPackages = async () => {
+        let response = await fetchAllPackage(currentPage, currentLimit);
+        if (response && response.data && response.data.EC === '0') {
+            console.log(response.data.DT);
+            setTotalPages(response.data.DT.totalPages);
+            setListPackage(response.data.DT.packages);
+        }
+    }
+    const handleCreate = async (packageData) => {
+        // validate
+        let res = await createPackage(packageData);
+        fetchPackages();
+    }
+    const handleUpdate = async (packageData) => {
+        // validate
+        let res = await updatePackage(packageData);
+        fetchPackages();
+    }
+    const handleOpenCreateModal = () => {
+        setActionPackageModal("CREATE");
+        setIsDisplayModal(true);
+    }
+    const handleCloseModal = () => {
+        setIsDisplayModal(false);
+    }
+    const handleSelectPackage = (packageData) => {
+        console.log(">>> selected", packageData);
+        setActionPackageModal("UPDATE");
+        setSelectedPackage(packageData);
+        setIsDisplayModal(true);
+    }
+    const handleDelete = async (packageData) => {
+        await deletePackage(packageData);
+        fetchPackages(); // Call fetchPackages to re-render the component
+    }
+    const handleChange = (event, value) => {
+        console.log(value);
+        setCurrentPage(+value);
+    }
+    let PACKAGE_TYPES = [];
+    useEffect(() => {
+        fetch('../../../../package_type.json')
+            .then(response => response.json())
+            .then(data => {
+                PACKAGE_TYPES = data;
+            })
+            .catch(error => console.error("Error fetching JSON: ", error));
+    }, [])
     return (
-        <div className='flex flex-col'>
-            <div className='flex-1 flex flex-row justify-between mx-8 my-4'>
+        <div className='flex flex-col h-full mx-12'>
+            <div className='flex flex-row justify-between mx-8 my-4'>
                 <div className="flex flex-1">
-                    <select id="dropdown-button" className="z-10 py-2.5 px-4 py-2 text-sm font-medium text-gray-900 bg-blue-100 border border-gray-300 rounded-s-lg focus:ring-2 focus:outline-none focus:ring-2" type="button">
-                        <option value="" selected disabled>Select Categories</option>
+                    <select defaultValue={""} id="dropdown-button" className="z-10 py-2.5 px-4 py-2 text-sm font-medium text-gray-900 bg-blue-100 border border-gray-300 rounded-s-lg focus:ring-2 focus:outline-none focus:ring-2" type="button">
+                        <option value="" disabled>Select Categories</option>
                         <option value="Name">Package Name</option>
                         <option value="Id">Package Id</option>
                     </select>
@@ -67,13 +96,34 @@ function Package(props) {
                     </div>
                 </div>
                 <div className='flex-1 inter-font'>
-                    <PackageModal title="Create Package" />
+                    <input
+                        className='primary-button p-2 rounded-lg text-md font-medium px-6 float-right'
+                        type='button'
+                        onClick={handleOpenCreateModal}
+                        value='Create package' />
+                    <PackageModal
+                        displayModal={isDisplayModal}
+                        onCloseModal={handleCloseModal}
+                        packageTypes={PACKAGE_TYPES}
+                        onCreatePackage={handleCreate}
+                        onUpdatePackage={handleUpdate}
+                        action={actionPackageModal}
+                        packageData={selectedPackage}
+                    />
                 </div>
             </div>
             <div className='flex-1 mx-8 my-4'>
-                <PackageTable tableHeads={TABLE_HEADS} tableRows={TABLE_ROWS} />
-                {/* <SortableTable /> */}
+                <PackageTable
+                    currentLimit={currentLimit}
+                    currentPage={currentPage}
+                    tableHeads={TABLE_HEADS}
+                    tableRows={listPackage}
+                    onDeletePackage={handleDelete}
+                    onSelectPackage={handleSelectPackage} />
             </div>
+            {totalPages > 0 &&
+                <Pagination className='absolute bottom-10 left-1/2 transform -translate-x-1/2 ' count={+totalPages} page={+currentPage} onChange={handleChange} color="primary" variant="outlined" size="large" />
+            }
         </div>
     );
 }

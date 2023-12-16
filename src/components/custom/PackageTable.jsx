@@ -2,28 +2,38 @@ import {
     MagnifyingGlassIcon,
     ChevronUpDownIcon,
 } from "@heroicons/react/24/outline";
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import {
-    Card,
-    CardHeader,
-    Input,
     Typography,
-    Button,
-    CardBody,
-    Chip,
-    CardFooter,
-    Tabs,
-    TabsHeader,
-    Tab,
-    Avatar,
-    IconButton,
-    Tooltip,
 } from "@material-tailwind/react";
 import '../styles/Table.css';
-
+import { IconButton } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { deletePackage } from '../../services/packageServices';
 function PackageTable(props) {
+    const currentPage = props.currentPage;
+    const currentLimit = props.currentLimit;
     const TABLE_HEADS = props.tableHeads;
     const TABLE_ROWS = props.tableRows;
+
+    const handleSelectPackage = (packageData) => {
+        props.onSelectPackage(packageData);
+    }
+
+    const validateDelete = (id) => {
+        // Check exists in Tour
+
+        // Return Permission
+        return true;
+    }
+    const handleDeletePackage = async (packageData) => {
+        if (validateDelete(packageData.id) === true) {
+            // console.log(">>> package data delete req", packageData);
+            // let res = await deletePackage(packageData);
+            props.onDeletePackage(packageData); // Invoke the callback
+
+        }
+    }
     return (
         <table className="package-table mt-4 w-full min-w-max table-auto text-left">
             <thead>
@@ -51,37 +61,43 @@ function PackageTable(props) {
                             color="blue-gray"
                             className="text-md flex items-center justify-between gap-2 font-semibold leading-none heading-color"
                         >
-                            Detail
-                            <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
+                            Operations
                         </Typography>
                     </th>
                 </tr>
             </thead>
             <tbody>
                 {TABLE_ROWS.map(
-                    ({ id, packageName, packageType, packageAddress }, index) => {
+                    (packageData, index) => {
 
 
                         return (
-                            <tr key={id}>
-                                <td className="py-3 font-normal text-md pl-4">
-                                    {id}
+                            <tr key={packageData.id}>
+                                <td className="py-3 font-normal text-md pl-4 w-24!">
+                                    {index + 1 + (currentPage - 1) * currentLimit}
                                 </td>
-                                <td className="font-normal text-md pl-4">
-                                    {packageName}
+                                <td className="font-normal text-md pl-4 w-64! truncate overflow-hidden">
+                                    {packageData.packageName}
                                 </td>
                                 <td>
-                                    <div className="font-normal text-md pl-4">
-                                        {packageType}
+                                    <div className="font-normal text-md pl-4 w-48!">
+                                        {packageData.packageType}
                                     </div>
                                 </td>
                                 <td>
-                                    <div className="font-normal text-md pl-4">
-                                        {packageAddress}
+                                    <div className="font-normal text-md pl-4 w-48!">
+                                        {packageData.packageAddress}
                                     </div>
                                 </td>
                                 <td>
-                                    <div className="font-medium text-md pl-4 cursor-pointer hover:underline">View Detail {'>>'}</div>
+                                    <div className="font-medium text-md pl-4 cursor-pointer hover:underline w-24!">
+                                        <IconButton aria-label="edit" size="medium" color="primary" onClick={() => handleSelectPackage(packageData)}>
+                                            <EditIcon fontSize="inherit" />
+                                        </IconButton>
+                                        <IconButton aria-label="delete" size="medium" color="error" onClick={() => handleDeletePackage(packageData)}>
+                                            <DeleteIcon fontSize="inherit" />
+                                        </IconButton>
+                                    </div>
                                 </td>
                             </tr>
                         );

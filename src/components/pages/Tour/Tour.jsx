@@ -4,10 +4,9 @@ import React, { useState, useEffect } from 'react';
 function Tour(props) {
     return (
         <div>
-            <Link to='./create-tour' className='primary-button p-2 rounded-lg text-md font-medium px-6'>
+            <Link to='/create-tour' className='primary-button p-2 rounded-lg text-md font-medium px-6'>
                 Create Tour
             </Link>
-            <Outlet />
         </div>
     );
 }

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/Custom.css';
-function CRUDTour(props) {
+function CreateTour(props) {
     return (
         <div>
-            CRUD Tour
+            CreateTour
         </div>
     );
 }
 
-export default CRUDTour;
+export default CreateTour;
