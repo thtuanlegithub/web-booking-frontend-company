@@ -9,9 +9,9 @@ tr:first-child {
 
 .btn-back {
     background-color: var(--btn-back);
-    color: var(--primary-color);
+    color: var(--text-heading-color);
 }
 
 .btn-back:hover {
-    background-color: #88D3E3;
+    background-color: var(--btn-back-hover);
 }
