@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/Custom.css';
 import { FaAngleDoubleLeft } from 'react-icons/fa';
@@ -7,51 +7,8 @@ import { FaCalendarDay } from "react-icons/fa";
 import { PACKAGE_ADDRESSES } from '../../../lib/consts/packageAddresses';
 import { useState } from 'react';
 import ImageUploader from '../../custom/ImageUploader';
-const TOURSCHEDULE = [
-    [""]];
-const itemData = [
-    {
-        img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-        title: 'Breakfast',
-        rows: 2,
-        cols: 2,
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-        title: 'Burger',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-        title: 'Camera',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
-        title: 'Coffee',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
-        title: 'Hats',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
-        title: 'Honey',
-        author: '@arwinneil',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
-        title: 'Basketball',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
-        title: 'Fern',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
-        title: 'Mushrooms',
-    }
-];
+import { fetchPackageByAddressList } from '../../../services/packageServices';
 function CreateTour(props) {
-
     // TOUR GENERAL INFORMATION
     const TOUR_STATUS = ['Completed', 'Incompleted'];
     const [tourName, setTourName] = useState('');
@@ -60,9 +17,40 @@ function CreateTour(props) {
     const [addressList, setAddressList] = useState([]);
     const [tourPrice, setTourPrice] = useState(0);
     const [tourStatus, setTourStatus] = useState('incompleted');
+    const handleTourName = (event) => {
+        setTourName(event.target.value);
+    }
+    const handleTotalDay = (event) => {
+        setTotalDay(event.target.tourName);
+    }
+    const handleTotalNight = (event) => {
+        setTotalNight(event.target.value);
+    }
+    const handleAddressList = (event, newValue) => {
+        setAddressList(newValue);
+    }
+    const handleTourPrice = (event) => {
+        setTourPrice(event.target.value);
+    }
+    const handleTourStatus = (event, newValue) => {
+        setAddressList(newValue);
+    }
+
     // TOUR SCHEDULE
-    const [tourSchedule, setTourSchedule] = useState(TOURSCHEDULE);
-    const [daySummaries, setDaySummaries] = useState(Array.from({ length: TOURSCHEDULE.length }, () => ""));
+
+    // Get list of Packages
+    const fetchPackageByAddress = async () => {
+        const addressValues = addressList.map(item => item.value);
+        const addressValueString = addressValues.join('|');
+        const encodedAddressList = encodeURIComponent(addressValueString);
+        let response = await fetchPackageByAddressList(encodedAddressList);
+        console.log(response.data);
+    }
+    useEffect(() => {
+        fetchPackageByAddress();
+    }, [addressList])
+    const [tourSchedule, setTourSchedule] = useState([]);
+    const [daySummaries, setDaySummaries] = useState(Array.from({ length: tourSchedule.length }, () => ""));
 
     const handlePackageChange = (dayIndex, packageIndex, value) => {
         setTourSchedule(prevTourSchedule => {
@@ -145,37 +133,62 @@ function CreateTour(props) {
                 <div className='flex-1 border border-blue-500 2xl:px-16 px-8 py-4 rounded-lg'>
                     <div className='text-lg font-semibold heading-color text-center'>Tour General Information</div>
                     <div className='mt-4'>
-                        <TextField fullWidth label='Tour name' placeholder='Enter tour name' required />
+                        <TextField
+                            fullWidth
+                            label='Tour name'
+                            placeholder='Enter tour name'
+                            onChange={handleTourName}
+                            required />
                     </div>
                     <div className='mt-4 flex'>
                         <div className='flex-1 mr-2'>
-                            <TextField type='number' label='Total day' fullWidth required />
+                            <TextField
+                                type='number'
+                                label='Total day'
+                                onChange={handleTotalDay}
+                                inputProps={{ min: 1 }}
+                                fullWidth
+                                required />
                         </div>
                         <div className='flex-1'>
-                            <TextField type='number' label='Total night' fullWidth required />
+                            <TextField
+                                type='number'
+                                label='Total night'
+                                onChange={handleTotalNight}
+                                inputProps={{ min: 1 }}
+                                fullWidth
+                                required />
                         </div>
                     </div>
                     <div className='mt-4'>
                         <Autocomplete
                             multiple
                             options={PACKAGE_ADDRESSES}
+                            onChange={handleAddressList}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
                                     label="Address List"
+                                    required
                                 />
                             )} />
                     </div>
                     <div className='flex flex-wrap'>
                         <div className='mt-4 flex-1 mr-2'>
-                            <TextField type='money' label='Tour price' fullWidth required />
+                            <TextField
+                                type='money'
+                                label='Tour price'
+                                onChange={handleTourPrice}
+                                fullWidth
+                                required />
                         </div>
                         <div className='mt-4 flex-1'>
                             <Autocomplete
                                 id="tourStatus"
                                 options={TOUR_STATUS}
+                                onChange={handleTourStatus}
                                 fullWidth
-                                renderInput={(params) => <TextField {...params} label="Tour Status" fullWidth />}
+                                renderInput={(params) => <TextField {...params} label="Tour Status" fullWidth required />}
                             />
                         </div>
                     </div>

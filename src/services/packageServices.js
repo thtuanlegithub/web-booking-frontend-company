@@ -1,9 +1,16 @@
 import axios from "axios";
-const fetchAllPackage = async (page, limit) => {
+const fetchPackageByAddressList = async (addressList) => {
+    try {
+        return axios.get(`http://localhost:8080/api/package/read-by-address?addressList=${addressList}`);
+    } catch (error) {
+        console.error("Error - fetchAllPackage", error);
+    }
+}
+const fetchPackagePagination = async (page, limit) => {
     try {
         return axios.get(`http://localhost:8080/api/package/read?page=${page}&limit=${limit}`);
     } catch (error) {
-        console.error("Error - fetchAllPackage", error);
+        console.error("Error - fetchPackagePagination", error);
     }
 }
 const createPackage = async (packageData) => {
@@ -29,4 +36,4 @@ const updatePackage = async (packageData) => {
 
     }
 }
-export { fetchAllPackage, createPackage, deletePackage, updatePackage };
+export { fetchPackagePagination, createPackage, deletePackage, updatePackage, fetchPackageByAddressList };

@@ -22,7 +22,7 @@ function Sidebar(props) {
                 {DASHBOARD_BOTTOM_LINKS.map((item) => (
                     <SidebarLink key={item.key} item={item} />
                 ))}
-                <div className={classNames('text-red-500 cursor-pointer', linkClasses)}>
+                <div className={classNames('text-red-500 cursor-pointer mb-16', linkClasses)}>
                     <span className='text-xl mr-3 ml-2'>
                         <HiOutlineLogout />
                     </span>

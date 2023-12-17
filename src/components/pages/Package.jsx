@@ -2,7 +2,7 @@ import '../styles/Package.css';
 import React, { useEffect, useState, useRef } from 'react';
 import PackageTable from '../custom/PackageTable';
 import PackageModal from '../custom/PackageModal';
-import { createPackage, updatePackage, deletePackage, fetchAllPackage } from '../../services/packageServices';
+import { createPackage, updatePackage, deletePackage, fetchPackagePagination } from '../../services/packageServices';
 import handleDeletePackage from '../custom/PackageTable';
 // import ReactPaginate from 'react-paginate';
 import Pagination from '@mui/material/Pagination';
@@ -19,7 +19,7 @@ function Package(props) {
         fetchPackages();
     }, [currentPage]);
     const fetchPackages = async () => {
-        let response = await fetchAllPackage(currentPage, currentLimit);
+        let response = await fetchPackagePagination(currentPage, currentLimit);
         if (response && response.data && response.data.EC === '0') {
             console.log(response.data.DT);
             setTotalPages(response.data.DT.totalPages);
