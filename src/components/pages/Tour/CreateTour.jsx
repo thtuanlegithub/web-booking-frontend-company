@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/Custom.css';
 import { FaAngleDoubleLeft } from 'react-icons/fa';
 import { Autocomplete, TextField, Button } from '@mui/material';
 import { FaCalendarDay } from "react-icons/fa";
 import { PACKAGE_ADDRESSES } from '../../../lib/consts/packageAddresses';
-import { useState } from 'react';
 import ImageUploader from '../../custom/ImageUploader';
 import { fetchPackageByAddressList } from '../../../services/packageServices';
+import { createTour } from '../../../services/tourServices';
+
 function CreateTour(props) {
     // TOUR GENERAL INFORMATION
     const TOUR_STATUS = ['Completed', 'Incompleted'];
@@ -39,16 +40,28 @@ function CreateTour(props) {
     // TOUR SCHEDULE
 
     // Get list of Packages
-    const fetchPackageByAddress = async () => {
-        const addressValues = addressList.map(item => item.value);
-        const addressValueString = addressValues.join('|');
-        const encodedAddressList = encodeURIComponent(addressValueString);
-        let response = await fetchPackageByAddressList(encodedAddressList);
-        console.log(response.data);
-    }
+    const [packageList, setPackageList] = useState([]);
+    const [packageListOptions, setPackageListOptions] = useState([]);
+
     useEffect(() => {
+        const fetchPackageByAddress = async () => {
+            const addressValues = addressList.map(item => item.value);
+            const addressValueString = addressValues.join('|');
+            const encodedAddressList = encodeURIComponent(addressValueString);
+            let response = await fetchPackageByAddressList(encodedAddressList);
+            console.log(response.data.DT, typeof (response.data.DT));
+            setPackageList(response.data.DT);
+        }
         fetchPackageByAddress();
     }, [addressList])
+    useEffect(() => {
+        if (Array.isArray(packageList)) {
+            // Xử lý khi packageList là mảng
+            setPackageListOptions(packageList.map((item) => ({ label: item.packageName, value: item.id })));
+        } else {
+            console.error("packageList is not an array.");
+        }
+    }, [packageList])
     const [tourSchedule, setTourSchedule] = useState([]);
     const [daySummaries, setDaySummaries] = useState(Array.from({ length: tourSchedule.length }, () => ""));
 
@@ -122,6 +135,35 @@ function CreateTour(props) {
             return newDaySummaries;
         });
     };
+
+    // CREATE TOUR
+
+    const imageUploaderRef = useRef();
+    const mergeAddressList = () => {
+        const addressValues = addressList.map(item => item.value);
+        const addressValueString = addressValues.join('|');
+        return addressValueString;
+    }
+    const handleCreateTour = async () => {
+        await imageUploaderRef.current.handleUploadImages();
+
+        let tourData = {
+            tourGeneralInformation: {
+                tourName: tourName,
+                totalDay: totalDay,
+                totalNight: totalNight,
+                addressList: mergeAddressList(),
+                tourPrice: tourPrice,
+                tourStatus: tourStatus
+            },
+            mainImage: '',
+            additionalImages: [],
+            tourSchedule: tourSchedule,
+            daySummaries: daySummaries
+        }
+        console.log(tourData);
+        // let response = await createTour(tourData);
+    }
     return (
         <div className='flex flex-col max-h-full overflow-y-auto' >
             <Link to='/tour' className='w-64 mb-4 text-md heading-color font-semibold btn-back p-2 cursor-pointer rounded-lg'>
@@ -193,7 +235,7 @@ function CreateTour(props) {
                         </div>
                     </div>
                     <div className='mt-4'>
-                        <ImageUploader />
+                        <ImageUploader ref={imageUploaderRef} />
                     </div>
                     {/* <img className='mt-4 cursor-pointer' src='./ImgPlaceholder.png' /> */}
                 </div>
@@ -214,7 +256,7 @@ function CreateTour(props) {
                                             value={daySummaries[dayIndex]}
                                             onChange={(e) => handleDaySummaryChange(dayIndex, e.target.value)}
                                         />
-                                        <Button className='!normal-case !bg-red-300 !ml-2' variant="contained" color="secondary" onClick={(e) => handleRemoveDay(dayIndex, e.target.value)}>
+                                        <Button className='!normal-case !text-xs !bg-red-300 !ml-2' variant="contained" color="secondary" onClick={(e) => handleRemoveDay(dayIndex, e.target.value)}>
                                             Remove day
                                         </Button>
                                     </div>
@@ -226,7 +268,7 @@ function CreateTour(props) {
                                                     size='small'
                                                     key={packageItem} // Thêm key vào đây
                                                     value={packageItem}
-                                                    options={['Package1.1', 'Package1.2', 'Package2.1', 'Package2.2', 'Package3.1', 'Package3.2']}
+                                                    options={packageListOptions}
                                                     onChange={(event, newValue) => handlePackageChange(dayIndex, packageIndex, newValue)}
                                                     renderInput={(params) => (
                                                         <TextField
@@ -236,13 +278,13 @@ function CreateTour(props) {
                                                         />
                                                     )}
                                                 />
-                                                <Button className='!normal-case !bg-red-300' variant="contained" color="secondary" onClick={() => handleRemovePackage(dayIndex, packageIndex)}>
+                                                <Button className='!normal-case !text-xs !bg-red-300' variant="contained" color="secondary" onClick={() => handleRemovePackage(dayIndex, packageIndex)}>
                                                     Remove
                                                 </Button>
-                                                <Button className='!normal-case !bg-blue-300' variant="contained" color="primary" onClick={() => handleMovePackage(dayIndex, packageIndex, 'up')}>
+                                                <Button className='!normal-case !text-xs !bg-blue-300' variant="contained" color="primary" onClick={() => handleMovePackage(dayIndex, packageIndex, 'up')}>
                                                     Up
                                                 </Button>
-                                                <Button className='!normal-case !bg-blue-300' variant="contained" color="primary" onClick={() => handleMovePackage(dayIndex, packageIndex, 'down')}>
+                                                <Button className='!normal-case !text-xs !bg-blue-300' variant="contained" color="primary" onClick={() => handleMovePackage(dayIndex, packageIndex, 'down')}>
                                                     Down
                                                 </Button>
                                             </div>
@@ -263,7 +305,10 @@ function CreateTour(props) {
                 </div>
             </div>
             <div className='flex justify-center'>
-                <Button className='!bg-green-500 !normal-case w-64 !bg-green-300 !mt-8 !mb-8' variant="contained">
+                <Button
+                    className='!bg-green-500 !normal-case w-64 !bg-green-300 !mt-8 !mb-8'
+                    variant="contained"
+                    onClick={handleCreateTour}>
                     Save
                 </Button>
             </div>
