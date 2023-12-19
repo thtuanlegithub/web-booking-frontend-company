@@ -1,15 +1,13 @@
 import {
-    MagnifyingGlassIcon,
-    ChevronUpDownIcon,
+    ChevronUpDownIcon
 } from "@heroicons/react/24/outline";
 import {
     Typography,
 } from "@material-tailwind/react";
-import '../styles/Table.css';
+import '../../styles/Table.css';
 import { IconButton } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { deletePackage } from '../../services/packageServices';
 function PackageTable(props) {
     const currentPage = props.currentPage;
     const currentLimit = props.currentLimit;

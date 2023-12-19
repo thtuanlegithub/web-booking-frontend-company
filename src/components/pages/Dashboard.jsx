@@ -11,7 +11,7 @@ function Dashboard(props) {
     const [numberCancelBooking, setNumberCancelBooking] = useState(7);
     const [moneyRefund, setMoneyRefund] = useState(7400000);
     return (
-        <div className='dashboard max-h-full overflow-y-auto'>
+        <div className='dashboard min-w-max max-h-full overflow-y-auto'>
             <div className='dashboard-overview-bg px-8 pt-4 pb-8 mx-4 drop-shadow-lg'>
                 <div className='font-bold text-2xl heading-color'>Dashboard</div>
                 <div className='heading-color text-lg font-regular'>A quick data overview of the Tour Management.</div>
@@ -30,7 +30,7 @@ function Dashboard(props) {
                 <div className='col-span-2 chart-booking rounded-lg mx-4 my-8 drop-shadow-md'>
                 </div>
             </div>
-        </div >
+        </div>
     );
 }
 function formatNumberWithCommas(number) {
@@ -83,7 +83,7 @@ function QuickReport(props) {
     }
 }
 function QuickOverview(props) {
-    const generalOverviewClass = 'relative quick-overview flex-1 pb-4 pt-2 h-48 rounded-3xl shadow-lg cursor-pointer hover:translate-x-1 hover:-translate-y-1';
+    const generalOverviewClass = 'relative min-w-max quick-overview flex-1 pb-4 pt-2 h-48 rounded-3xl shadow-lg cursor-pointer hover:translate-x-1 hover:-translate-y-1';
     let colorClass = '';
     switch (props.overviewmap) {
         case 'tourplan':

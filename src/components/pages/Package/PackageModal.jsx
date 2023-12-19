@@ -2,9 +2,9 @@ import Modal from 'react-modal';
 import Select from 'react-select';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { PACKAGE_TYPES } from '../../lib/consts/packageTypes';
-import { PACKAGE_ADDRESSES } from '../../lib/consts/packageAddresses';
-import '../styles/CustomModal.css';
+import { PACKAGE_TYPES } from '../../../lib/consts/packageTypes';
+import { PACKAGE_ADDRESSES } from '../../../lib/consts/packageAddresses';
+import '../../styles/CustomModal.css';
 
 const customStyles = {
     content: {

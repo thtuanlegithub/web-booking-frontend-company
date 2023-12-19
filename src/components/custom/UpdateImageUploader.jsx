@@ -3,10 +3,9 @@ import { generateUniqueId } from '../utils/generateUniqueId';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { app } from '../../config/firebase';
 
-const ImageUploader = forwardRef((props, ref) => {
+const UpdateImageUploader = forwardRef((props, ref) => {
     const [mainImage, setMainImage] = useState(null);
     const [gallery, setGallery] = useState([]);
-
     const handleMainImageChange = (event) => {
         const file = event.target.files[0];
 
@@ -88,6 +87,16 @@ const ImageUploader = forwardRef((props, ref) => {
         handleUploadImages: handleUploadImages,
     }));
 
+    useEffect(() => {
+        console.log('main img url', props.fetchMainImageUrl);
+        setMainImage({
+            dataUrl: props.fetchMainImageUrl,
+            file: ''
+        });
+        console.log(props.fetchAdditionalImageUrls);
+        setGallery(props.fetchAdditionalImageUrls.map((item) => ({ dataUrl: item, file: '' })));
+    }, [props.fetchMainImageUrl, props.fetchAdditionalImageUrls])
+
     return (
         <div>
             <div className="relative">
@@ -162,4 +171,4 @@ const ImageUploader = forwardRef((props, ref) => {
     );
 });
 
-export default ImageUploader;
+export default UpdateImageUploader;

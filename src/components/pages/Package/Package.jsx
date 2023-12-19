@@ -1,9 +1,9 @@
-import '../styles/Package.css';
+import '../../styles/Package.css';
 import React, { useEffect, useState, useRef } from 'react';
-import PackageTable from '../custom/PackageTable';
-import PackageModal from '../custom/PackageModal';
-import { createPackage, updatePackage, deletePackage, fetchPackagePagination } from '../../services/packageServices';
-import handleDeletePackage from '../custom/PackageTable';
+import PackageTable from './PackageTable';
+import PackageModal from './PackageModal';
+import { createPackage, updatePackage, deletePackage, fetchPackagePagination } from '../../../services/packageServices';
+import handleDeletePackage from './PackageTable';
 // import ReactPaginate from 'react-paginate';
 import Pagination from '@mui/material/Pagination';
 const TABLE_HEADS = ['No.', 'Package Name', 'Package Type', 'Address'];
@@ -54,7 +54,6 @@ function Package(props) {
         fetchPackages(); // Call fetchPackages to re-render the component
     }
     const handleChange = (event, value) => {
-        console.log(value);
         setCurrentPage(+value);
     }
     let PACKAGE_TYPES = [];
@@ -67,8 +66,8 @@ function Package(props) {
             .catch(error => console.error("Error fetching JSON: ", error));
     }, [])
     return (
-        <div className='flex flex-col h-full mx-12'>
-            <div className='flex flex-row justify-between mx-8 my-4'>
+        <div className='flex flex-col h-full mx-8 2xl:mx-20'>
+            <div className='flex flex-row justify-between my-4'>
                 <div className="flex flex-1">
                     <select defaultValue={""} id="dropdown-button" className="z-10 py-2.5 px-4 py-2 text-sm font-medium text-gray-900 bg-blue-100 border border-gray-300 rounded-s-lg focus:ring-2 focus:outline-none focus:ring-2" type="button">
                         <option value="" disabled>Select Categories</option>
@@ -112,7 +111,7 @@ function Package(props) {
                     />
                 </div>
             </div>
-            <div className='flex-1 mx-8 my-4'>
+            <div className='flex-1 my-4'>
                 <PackageTable
                     currentLimit={currentLimit}
                     currentPage={currentPage}

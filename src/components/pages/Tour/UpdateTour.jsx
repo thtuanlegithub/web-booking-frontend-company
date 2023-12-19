@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import '../../styles/Custom.css';
 import { FaAngleDoubleLeft } from 'react-icons/fa';
 import { Autocomplete, TextField, Button } from '@mui/material';
 import { FaCalendarDay } from "react-icons/fa";
 import { PACKAGE_ADDRESSES } from '../../../lib/consts/packageAddresses';
-import ImageUploader from '../../custom/ImageUploader';
+import UpdateImageUploader from '../../custom/UpdateImageUploader';
 import { fetchPackageByAddressList } from '../../../services/packageServices';
-import { createTour } from '../../../services/tourServices';
+import { fetchTourById, updateTour } from '../../../services/tourServices';
+import { select } from '@material-tailwind/react';
 
-function CreateTour(props) {
+function UpdateTour(props) {
     // TOUR GENERAL INFORMATION
     const TOUR_STATUS = ['Completed', 'Incompleted'];
     const [tourName, setTourName] = useState('');
@@ -42,7 +43,6 @@ function CreateTour(props) {
     // Get list of Packages
     const [packageList, setPackageList] = useState([]);
     const [packageListOptions, setPackageListOptions] = useState([]);
-
     useEffect(() => {
         const fetchPackageByAddress = async () => {
             const addressValues = addressList.map(item => item.value);
@@ -136,7 +136,7 @@ function CreateTour(props) {
         });
     };
 
-    // CREATE TOUR
+    // UPDATE TOUR
     const [mainImage, setMainImage] = useState(null);
     const [additionalImages, setAdditionalImages] = useState([]);
 
@@ -146,7 +146,6 @@ function CreateTour(props) {
         const addressValueString = addressValues.join('|');
         return addressValueString;
     }
-
     const handleLoadMainImage = (mainImageId) => {
         console.log(">>> handle load main image: ", mainImageId);
         setMainImage(mainImageId);
@@ -155,17 +154,17 @@ function CreateTour(props) {
         console.log(">>> handle load additional images", additionalImagesId);
         setAdditionalImages(additionalImagesId);
     }
-    const handleCreateTour = async () => {
+    const handleUpdateTour = async () => {
         await imageUploaderRef.current.handleUploadImages();
     }
     useEffect(() => {
         if (mainImage != null && additionalImages.length > 0) {
-            fetchCreateTour();
+            fetchUpdateTour();
         }
     }, [mainImage, additionalImages]);
-    const fetchCreateTour = async () => {
-        console.log('mainImage in fetchCreateTour:', mainImage);
-        console.log('additionalImages in fetchCreateTour:', additionalImages);
+    const fetchUpdateTour = async () => {
+        console.log('mainImage in fetchUpdateTour:', mainImage);
+        console.log('additionalImages in fetchUpdateTour:', additionalImages);
         const tourData = {
             tourGeneralInformation: {
                 tourName: tourName,
@@ -182,9 +181,44 @@ function CreateTour(props) {
         }
 
         console.log(tourData);
-        let response = await createTour(tourData);
+        let response = await updateTour(tourData);
         console.log(response);
         console.log(tourData);
+    }
+    useEffect(() => {
+        getSelectedTour();
+    }, [])
+    const { tourId } = useParams();
+    const [mainImageUrl, setMainImageUrl] = useState(null);
+    const [additionalImageUrls, setAdditionalImageUrls] = useState([]);
+    const getSelectedTour = async () => {
+        let res = await fetchTourById(tourId);
+        if (res && res.data && res.data.EC === '0') {
+            const selectedTourData = res.data.DT;
+            console.log("selectedTourData", selectedTourData);
+            console.log(tourName);
+
+            // Tour General Information
+            setTourName(selectedTourData.tourName);
+            setTotalDay(selectedTourData.totalDay);
+            setTotalNight(selectedTourData.totalNight);
+            const addressListSplit = selectedTourData.addressList.split('|');
+            setAddressList(addressListSplit.map((item) => ({ label: item, value: item })));
+            setTourPrice(selectedTourData.tourPrice);
+            setTourStatus({ label: selectedTourData.tourStatus, value: selectedTourData.tourStatus });
+
+            // Tour Image List
+            setMainImageUrl(selectedTourData.mainImage);
+            const additionalImageUrlsList = selectedTourData.TourAdditionalImages.map((item) => (item.additionalImage));
+            setAdditionalImageUrls(additionalImageUrlsList);
+            console.log(additionalImageUrls);
+
+            // Tour Schedule
+
+        }
+
+
+
     }
     return (
         <div className='flex flex-col max-h-full overflow-y-auto' >
@@ -192,12 +226,13 @@ function CreateTour(props) {
                 <FaAngleDoubleLeft className='inline mr-2' />
                 <div className='inline'>Back to Tour Management</div>
             </Link>
-            <div className='inline text-2xl heading-color font-bold text-center mb-4'>Create Tour</div>
+            <div className='inline text-2xl heading-color font-bold text-center mb-4'>Update Tour</div>
             <div className='flex flex-wrap xl:gap-8 gap-4'>
                 <div className='flex-1 border border-blue-500 2xl:px-16 px-8 py-4 rounded-lg'>
                     <div className='text-lg font-semibold heading-color text-center'>Tour General Information</div>
                     <div className='mt-4'>
                         <TextField
+                            value={tourName}
                             fullWidth
                             label='Tour name'
                             placeholder='Enter tour name'
@@ -207,6 +242,7 @@ function CreateTour(props) {
                     <div className='mt-4 flex'>
                         <div className='flex-1 mr-2'>
                             <TextField
+                                value={totalDay}
                                 type='number'
                                 label='Total day'
                                 onChange={handleTotalDay}
@@ -216,6 +252,7 @@ function CreateTour(props) {
                         </div>
                         <div className='flex-1'>
                             <TextField
+                                value={totalNight}
                                 type='number'
                                 label='Total night'
                                 onChange={handleTotalNight}
@@ -226,6 +263,7 @@ function CreateTour(props) {
                     </div>
                     <div className='mt-4'>
                         <Autocomplete
+                            value={addressList}
                             multiple
                             options={PACKAGE_ADDRESSES}
                             onChange={handleAddressList}
@@ -240,6 +278,7 @@ function CreateTour(props) {
                     <div className='flex flex-wrap'>
                         <div className='mt-4 flex-1 mr-2'>
                             <TextField
+                                value={tourPrice}
                                 type='money'
                                 label='Tour price'
                                 onChange={handleTourPrice}
@@ -248,6 +287,7 @@ function CreateTour(props) {
                         </div>
                         <div className='mt-4 flex-1'>
                             <Autocomplete
+                                value={tourStatus}
                                 id="tourStatus"
                                 options={TOUR_STATUS}
                                 onChange={handleTourStatus}
@@ -257,7 +297,10 @@ function CreateTour(props) {
                         </div>
                     </div>
                     <div className='mt-4'>
-                        <ImageUploader ref={imageUploaderRef}
+                        <UpdateImageUploader
+                            ref={imageUploaderRef}
+                            fetchMainImageUrl={mainImageUrl}
+                            fetchAdditionalImageUrls={additionalImageUrls}
                             onMainImageUpload={handleLoadMainImage}
                             onAdditionalImagesUpload={handleLoadAdditionalImages} />
                         <div className='w-72'></div>
@@ -333,7 +376,7 @@ function CreateTour(props) {
                 <Button
                     className='!bg-green-500 !normal-case w-64 !bg-green-300 !mt-8 !mb-8'
                     variant="contained"
-                    onClick={handleCreateTour}>
+                    onClick={handleUpdateTour}>
                     Save
                 </Button>
             </div>
@@ -341,4 +384,4 @@ function CreateTour(props) {
     );
 }
 
-export default CreateTour;
+export default UpdateTour;
