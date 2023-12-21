@@ -187,7 +187,7 @@ function CreateTour(props) {
         console.log(tourData);
     }
     return (
-        <div className='flex flex-col max-h-full overflow-y-auto' >
+        <div className='flex flex-col max-h-full overflow-y-auto'>
             <Link to='/tour' className='w-64 mb-4 text-md heading-color font-semibold btn-back p-2 cursor-pointer rounded-lg'>
                 <FaAngleDoubleLeft className='inline mr-2' />
                 <div className='inline'>Back to Tour Management</div>

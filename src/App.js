@@ -1,10 +1,13 @@
 import React from 'react';
 import AdminRoutes from './routes/AdminRoutes';
-import { ThemeProvider } from "@material-tailwind/react";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 function App(props) {
   return (
-    <AdminRoutes />
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <AdminRoutes />
+    </LocalizationProvider>
   );
 }
 

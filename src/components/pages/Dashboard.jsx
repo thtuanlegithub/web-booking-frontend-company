@@ -15,7 +15,7 @@ function Dashboard(props) {
             <div className='dashboard-overview-bg px-8 pt-4 pb-8 mx-4 drop-shadow-lg'>
                 <div className='font-bold text-2xl heading-color'>Dashboard</div>
                 <div className='heading-color text-lg font-regular'>A quick data overview of the Tour Management.</div>
-                <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-4 2xl:gap-12 gap-24 mx-8 mt-4 justify-evenly'>
+                <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 2xl:gap-12 gap-16 mx-8 mt-4 justify-evenly'>
                     <QuickOverview title='Tour Planning' data={overviewTourPlanning} content="Tours" overviewmap='tourplan' />
                     <QuickOverview title='Month Revenue' data={overviewTourPlanning} content="VND" overviewmap='revenue' />
                     <QuickOverview title='New Bookings' data={overviewTourPlanning} content="Need Resolving" overviewmap='booking' />

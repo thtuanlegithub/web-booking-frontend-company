@@ -3,31 +3,33 @@ import React from 'react';
 import { IconButton } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { fetchTourById } from '../../../services/tourServices';
+import { fetchTravelById } from '../../../services/travelServices';
 import { Link } from 'react-router-dom';
-function TourTable(props) {
+import dayjs from 'dayjs';
+
+function TravelTable(props) {
     const currentPage = props.currentPage;
     const currentLimit = props.currentLimit;
     const TABLE_HEADS = props.tableHeads;
     const TABLE_ROWS = props.tableRows;
-    const handleSelectTour = async (id) => {
-        let response = await fetchTourById(id);
-        if (response && response.data && response.data.EC === '0') {
-            // console.log(response.data.DT);
-        }
+    const handleSelectTravel = async (id) => {
+        // let response = await fetchTravelById(id);
+        // if (response && response.data && response.data.EC === '0') {
+        //     // console.log(response.data.DT);
+        // }
     }
-    const validateDelete = (tourId) => {
+    const validateDelete = (travelId) => {
         return true;
     }
-    const handleDeleteTour = (tourData) => {
-        if (validateDelete(tourData.id) === true) {
+    const handleDeleteTravel = (travelData) => {
+        if (validateDelete(travelData.id) === true) {
             // console.log(">>> package data delete req", packageData);
             // let res = await deletePackage(packageData);
-            props.onDeleteTour(tourData); // Invoke the callback
+            props.onDeleteTravel(travelData); // Invoke the callback
         }
     }
     return (
-        <table className="tour-table mt-4 w-full min-w-max table-auto text-left">
+        <table className="travel-table mt-4 w-full min-w-max table-auto text-left">
             <thead>
                 <tr>
                     {TABLE_HEADS.map((head, index) => (
@@ -54,49 +56,43 @@ function TourTable(props) {
             </thead>
             <tbody>
                 {TABLE_ROWS.map(
-                    (tourData, index) => {
+                    (travelData, index) => {
                         return (
-                            <tr key={tourData.id}>
+                            <tr key={travelData.id}>
                                 <td className="py-3 font-normal text-md pl-4 w-24!">
                                     {index + 1 + (currentPage - 1) * currentLimit}
                                 </td>
                                 <td className="font-normal text-md pl-4 w-64! truncate overflow-hidden">
-                                    {tourData.tourName}
+                                    {travelData.Tour.tourName}
                                 </td>
                                 <td>
                                     <div className="font-normal text-md pl-4 w-48!">
-                                        {tourData.totalDay}
+                                        {dayjs(travelData.startDateTime).format("DD/MM/YYYY")}
                                     </div>
                                 </td>
                                 <td>
                                     <div className="font-normal text-md pl-4 w-48!">
-                                        {tourData.totalNight}
+                                        {travelData.startLocation}
                                     </div>
                                 </td>
                                 <td>
                                     <div className="font-normal text-md pl-4 w-48!">
-                                        {tourData.tourPrice}
+                                        {travelData.travelPrice}
                                     </div>
                                 </td>
                                 <td>
-                                    {tourData.tourStatus === 'Completed' &&
-                                        <div className="font-normal text-md inline !font-medium bg-green-100 rounded-lg py-2 px-4 mx-1">
-                                            {tourData.tourStatus}
-                                        </div>
-                                        ||
-                                        <div className="font-normal text-md inline !font-medium bg-red-100 rounded-lg py-2 px-4 mx-1">
-                                            {tourData.tourStatus}
-                                        </div>
-                                    }
+                                    <div className="font-normal text-md pl-4 w-48!">
+                                        {travelData.remainTicket + '/' + travelData.maxTicket}
+                                    </div>
                                 </td>
                                 <td>
                                     <div className="font-medium text-md pl-4 cursor-pointer hover:underline w-24!">
-                                        <Link to={`/update-tour/${tourData.id}`}>
-                                            <IconButton aria-label="edit" size="medium" color="primary" onClick={() => handleSelectTour(tourData.id)}>
+                                        <Link to={`/update-travel/${travelData.id}`}>
+                                            <IconButton aria-label="edit" size="medium" color="primary" onClick={() => handleSelectTravel(travelData.id)}>
                                                 <EditIcon fontSize="inherit" />
                                             </IconButton>
                                         </Link>
-                                        <IconButton aria-label="delete" size="medium" color="error" onClick={() => handleDeleteTour(tourData)}>
+                                        <IconButton aria-label="delete" size="medium" color="error" onClick={() => handleDeleteTravel(travelData)}>
                                             <DeleteIcon fontSize="inherit" />
                                         </IconButton>
                                     </div>
@@ -110,4 +106,4 @@ function TourTable(props) {
     );
 }
 
-export default TourTable;
+export default TravelTable;

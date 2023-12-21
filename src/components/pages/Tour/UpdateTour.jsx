@@ -156,16 +156,19 @@ function UpdateTour(props) {
     }
     const handleUpdateTour = async () => {
         await imageUploaderRef.current.handleUploadImages();
+        // fetchUpdateTour();
     }
     useEffect(() => {
         if (mainImage != null && additionalImages.length > 0) {
             fetchUpdateTour();
         }
     }, [mainImage, additionalImages]);
+    const { tourId } = useParams();
     const fetchUpdateTour = async () => {
         console.log('mainImage in fetchUpdateTour:', mainImage);
         console.log('additionalImages in fetchUpdateTour:', additionalImages);
         const tourData = {
+            id: tourId,
             tourGeneralInformation: {
                 tourName: tourName,
                 totalDay: totalDay,
@@ -182,13 +185,12 @@ function UpdateTour(props) {
 
         console.log(tourData);
         let response = await updateTour(tourData);
-        console.log(response);
-        console.log(tourData);
+        console.log("updateTour res: ", response);
+        // console.log(tourData);
     }
     useEffect(() => {
         getSelectedTour();
     }, [])
-    const { tourId } = useParams();
     const [mainImageUrl, setMainImageUrl] = useState(null);
     const [additionalImageUrls, setAdditionalImageUrls] = useState([]);
     const getSelectedTour = async () => {
@@ -203,7 +205,8 @@ function UpdateTour(props) {
             setTotalDay(selectedTourData.totalDay);
             setTotalNight(selectedTourData.totalNight);
             const addressListSplit = selectedTourData.addressList.split('|');
-            setAddressList(addressListSplit.map((item) => ({ label: item, value: item })));
+            const addressListAutoComplete = addressListSplit.map((item) => ({ label: item, value: item }));
+            setAddressList(addressListAutoComplete);
             setTourPrice(selectedTourData.tourPrice);
             setTourStatus({ label: selectedTourData.tourStatus, value: selectedTourData.tourStatus });
 
@@ -214,7 +217,29 @@ function UpdateTour(props) {
             console.log(additionalImageUrls);
 
             // Tour Schedule
+            const tourSchedules = selectedTourData.TourSchedules;
 
+            if (Array.isArray(tourSchedules)) {
+                const loadedTourSchedule = tourSchedules.map((schedule) => {
+                    const packages = schedule.Packages;
+
+                    if (Array.isArray(packages)) {
+                        return packages.map((packageItem) => ({
+                            label: packageItem.packageName, value: packageItem.id
+                        }));
+                    } else {
+                        console.error("Invalid structure: packages is not an array");
+                        return [];
+                    }
+                });
+
+                const loadedDaySummaries = tourSchedules.map((schedule) => schedule.daySummary || "");
+
+                setTourSchedule(loadedTourSchedule);
+                setDaySummaries(loadedDaySummaries);
+            } else {
+                console.error("Invalid structure: tourSchedules is not an array");
+            }
         }
 
 

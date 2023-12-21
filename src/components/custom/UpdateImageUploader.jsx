@@ -61,23 +61,34 @@ const UpdateImageUploader = forwardRef((props, ref) => {
         // Upload main image
         if (mainImage) {
             const mainImageRef = storageRef(storageFolderRef, generateUniqueId());
-            await uploadBytes(mainImageRef, mainImage.file);
-            const mainImageId = await getDownloadURL(mainImageRef);
-            console.log('mainImage', mainImageId);
-            await props.onMainImageUpload(mainImageId);
+            if (mainImage && mainImage.file != '') {
+                await uploadBytes(mainImageRef, mainImage.file);
+                const mainImageId = await getDownloadURL(mainImageRef);
+                console.log("main image changed!", mainImage);
+                await props.onMainImageUpload(mainImageId);
+            }
+            else {
+                console.log(">>> main image not change/ exists, main image: ", mainImage);
+            }
         }
         else {
+            console.log(">>> main image is removed");
             await props.onMainImageUpload(null);
-
         }
         // Upload additional images
         const additionalImageIds = [];
         for (const galleryImage of gallery) {
             const galleryImageRef = storageRef(storageFolderRef, generateUniqueId());
-            await uploadBytes(galleryImageRef, galleryImage.file);
-            const galleryImageId = await getDownloadURL(galleryImageRef);
-            console.log('Gallery Image ID:', galleryImageId);
-            additionalImageIds.push(galleryImageId);
+            if (galleryImage && galleryImage.file != '') {
+                await uploadBytes(galleryImageRef, galleryImage.file);
+                const galleryImageId = await getDownloadURL(galleryImageRef);
+                additionalImageIds.push(galleryImageId);
+                console.log("an additional image changes");
+            }
+            else {
+                console.log(">>> additionals image not change/ exists, additional image: ", galleryImage);
+                additionalImageIds.push(galleryImage.dataUrl);
+            }
         }
         // Gọi callback và truyền additionalImageIds lên cha
         await props.onAdditionalImagesUpload(additionalImageIds);
