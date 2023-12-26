@@ -68,8 +68,7 @@ const ImageUploader = forwardRef((props, ref) => {
             await props.onMainImageUpload(mainImageId);
         }
         else {
-            await props.onMainImageUpload(null);
-
+            await props.onMainImageUpload('/');
         }
         // Upload additional images
         const additionalImageIds = [];
@@ -80,8 +79,14 @@ const ImageUploader = forwardRef((props, ref) => {
             console.log('Gallery Image ID:', galleryImageId);
             additionalImageIds.push(galleryImageId);
         }
-        // Gọi callback và truyền additionalImageIds lên cha
-        await props.onAdditionalImagesUpload(additionalImageIds);
+        if (additionalImageIds.length > 0) {
+            // Gọi callback và truyền additionalImageIds lên cha
+            await props.onAdditionalImagesUpload(additionalImageIds);
+        }
+        else {
+            additionalImageIds.push('/');
+            await props.onAdditionalImagesUpload(additionalImageIds);
+        }
     };
 
     useImperativeHandle(ref, () => ({

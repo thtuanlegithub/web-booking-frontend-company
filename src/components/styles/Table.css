@@ -3,6 +3,14 @@ table {
     border-spacing: 0;
 }
 
+td {
+    max-width: 400px;
+    /* Điều chỉnh giới hạn chiều rộng theo mong muốn của bạn */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 table tr th,
 table tr td {
     border-right: 1px solid rgba(2, 62, 138, 0.15);

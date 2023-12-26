@@ -173,7 +173,7 @@ function CreateTour(props) {
                 totalNight: totalNight,
                 addressList: mergeAddressList(),
                 tourPrice: tourPrice,
-                tourStatus: tourStatus
+                tourStatus: tourStatus.label
             },
             mainImage: mainImage,
             additionalImages: additionalImages,
@@ -257,7 +257,8 @@ function CreateTour(props) {
                         </div>
                     </div>
                     <div className='mt-4'>
-                        <ImageUploader ref={imageUploaderRef}
+                        <ImageUploader
+                            ref={imageUploaderRef}
                             onMainImageUpload={handleLoadMainImage}
                             onAdditionalImagesUpload={handleLoadAdditionalImages} />
                         <div className='w-72'></div>

@@ -12,13 +12,13 @@ import { select } from '@material-tailwind/react';
 
 function UpdateTour(props) {
     // TOUR GENERAL INFORMATION
-    const TOUR_STATUS = ['Completed', 'Incompleted'];
+    const TOUR_STATUS = [{ label: 'Completed', value: 'Completed' }, { label: 'Incompleted', value: 'Incompleted' }];
     const [tourName, setTourName] = useState('');
     const [totalDay, setTotalDay] = useState(0);
     const [totalNight, setTotalNight] = useState(0);
     const [addressList, setAddressList] = useState([]);
     const [tourPrice, setTourPrice] = useState(0);
-    const [tourStatus, setTourStatus] = useState('Incompleted');
+    const [tourStatus, setTourStatus] = useState({ label: '', value: '' });
     const handleTourName = (event) => {
         setTourName(event.target.value);
     }
@@ -175,7 +175,7 @@ function UpdateTour(props) {
                 totalNight: totalNight,
                 addressList: mergeAddressList(),
                 tourPrice: tourPrice,
-                tourStatus: tourStatus
+                tourStatus: tourStatus.label,
             },
             mainImage: mainImage,
             additionalImages: additionalImages,
@@ -183,7 +183,7 @@ function UpdateTour(props) {
             daySummaries: daySummaries
         }
 
-        console.log(tourData);
+        console.log('update tour', tourData);
         let response = await updateTour(tourData);
         console.log("updateTour res: ", response);
         // console.log(tourData);

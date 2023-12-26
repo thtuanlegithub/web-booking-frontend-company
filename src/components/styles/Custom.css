@@ -15,3 +15,7 @@ tr:first-child {
 .btn-back:hover {
     background-color: var(--btn-back-hover);
 }
+
+.bg-group-input {
+    background-color: #EDF8FB;
+}

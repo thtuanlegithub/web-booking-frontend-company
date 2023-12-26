@@ -1,31 +1,49 @@
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import TourTable from './TourTable';
-import { deleteTour, fetchTourPagination } from '../../../services/tourServices';
+import BookingTable from './BookingTable';
+import { deleteBooking, fetchBookingPagination } from '../../../services/bookingServices';
 import { Pagination } from '@mui/material';
-function Tour(props) {
-    const TABLE_HEADS = ['No.', 'Tour Name', 'Total Day', 'Total Night', 'Price', 'Status'];
-    const [listTour, setListTour] = useState([]);
+function Booking(props) {
+    const TABLE_HEADS = ['No.', 'Id', 'Customer Name', 'Travel Id', 'Booking Date', 'Total Price', 'Status'];
+    const TABLE_ROWS = [
+        {
+            id: 1,
+            tourName: 'Tour 1',
+            startDay: '01/01/2024',
+            startLocation: 10000000,
+            bookingPrice: 1,
+            remain: '0/50'
+        },
+        {
+            id: 2,
+            tourName: 'Tour 2',
+            startDay: '01/01/2024',
+            startLocation: 10000000,
+            bookingPrice: 1,
+            remain: '0/50'
+        }];
+    const [listBooking, setListBooking] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [currentLimit, setCurrentLimit] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     useEffect(() => {
-        fetchTours();
+        fetchBookings();
     }, [currentPage])
-    const fetchTours = async () => {
-        let response = await fetchTourPagination(currentPage, currentLimit);
+    const fetchBookings = async () => {
+        let response = await fetchBookingPagination(currentPage, currentLimit);
         if (response && response.data && response.data.EC === '0') {
             setTotalPages(response.data.DT.totalPages);
-            setListTour(response.data.DT.tours);
+            setListBooking(response.data.DT.bookings);
+            console.log(response.data.DT.bookings);
         }
 
     }
     const handleChange = (event, value) => {
         setCurrentPage(+value);
     }
-    const handleDelete = async (tourData) => {
-        await deleteTour(tourData);
-        fetchTours(); // Call fetchTours to re-render the component
+    const handleDelete = async (bookingData) => {
+        await deleteBooking(bookingData);
+        fetchBookings(); // Call fetchBookings to re-render the component
     }
     return (
         <div className='flex flex-col mx-8 2xl:mx-20'>
@@ -33,8 +51,8 @@ function Tour(props) {
                 <div className="flex flex-1">
                     <select defaultValue={""} id="dropdown-button" className="z-10 py-2.5 px-4 py-2 text-sm font-medium text-gray-900 bg-blue-100 border border-gray-300 rounded-s-lg focus:ring-2 focus:outline-none focus:ring-2" type="button">
                         <option value="" disabled>Select Categories</option>
-                        <option value="Name">Tour Name</option>
-                        <option value="Id">Tour Id</option>
+                        <option value="Name">Booking Name</option>
+                        <option value="Id">Booking Id</option>
                     </select>
                     <div id="dropdown" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                         <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button">
@@ -56,16 +74,16 @@ function Tour(props) {
                         </button>
                     </div>
                 </div>
-                <Link to='/create-tour' className='primary-button p-2 rounded-lg text-md font-medium px-6'>
-                    Create Tour
+                <Link to='/create-booking' className='primary-button p-2 rounded-lg text-md font-medium px-6'>
+                    Create Booking
                 </Link>
             </div>
-            <TourTable
+            <BookingTable
                 tableHeads={TABLE_HEADS}
-                tableRows={listTour}
+                tableRows={listBooking}
                 currentPage={currentPage}
                 currentLimit={currentLimit}
-                onDeleteTour={handleDelete} />
+                onDeleteBooking={handleDelete} />
             {totalPages > 0 &&
                 <Pagination className='absolute bottom-10 left-1/2 transform -translate-x-1/2 ' count={+totalPages} page={+currentPage} onChange={handleChange} color="primary" variant="outlined" size="large" />
             }
@@ -74,4 +92,4 @@ function Tour(props) {
     );
 }
 
-export default Tour;
+export default Booking;

@@ -68,12 +68,13 @@ const UpdateImageUploader = forwardRef((props, ref) => {
                 await props.onMainImageUpload(mainImageId);
             }
             else {
-                console.log(">>> main image not change/ exists, main image: ", mainImage);
+                console.log("main image not change");
+                await props.onMainImageUpload(mainImage.dataUrl);
             }
         }
         else {
             console.log(">>> main image is removed");
-            await props.onMainImageUpload(null);
+            await props.onMainImageUpload('/');
         }
         // Upload additional images
         const additionalImageIds = [];
@@ -91,7 +92,13 @@ const UpdateImageUploader = forwardRef((props, ref) => {
             }
         }
         // Gọi callback và truyền additionalImageIds lên cha
-        await props.onAdditionalImagesUpload(additionalImageIds);
+        if (additionalImageIds.length > 0) {
+            await props.onAdditionalImagesUpload(additionalImageIds);
+        }
+        else {
+            await props.onAdditionalImagesUpload(['/']);
+        }
+
     };
 
     useImperativeHandle(ref, () => ({
@@ -100,12 +107,20 @@ const UpdateImageUploader = forwardRef((props, ref) => {
 
     useEffect(() => {
         console.log('main img url', props.fetchMainImageUrl);
-        setMainImage({
-            dataUrl: props.fetchMainImageUrl,
-            file: ''
-        });
-        console.log(props.fetchAdditionalImageUrls);
-        setGallery(props.fetchAdditionalImageUrls.map((item) => ({ dataUrl: item, file: '' })));
+        console.log('additional image', props.fetchAdditionalImageUrls);
+        if (props.fetchMainImageUrl !== '/') {
+            setMainImage({
+                dataUrl: props.fetchMainImageUrl,
+                file: ''
+            });
+            if (props.fetchAdditionalImageUrls.length > 0 && props.fetchAdditionalImageUrls[0] != '/') {
+                setGallery(props.fetchAdditionalImageUrls.map((item) => ({ dataUrl: item, file: '' })));
+            }
+        }
+        else {
+            setMainImage(null);
+            setGallery([]);
+        }
     }, [props.fetchMainImageUrl, props.fetchAdditionalImageUrls])
 
     return (

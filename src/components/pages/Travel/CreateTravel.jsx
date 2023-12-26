@@ -141,7 +141,7 @@ function CreateTravel(props) {
             </Link>
             <div className='inline text-2xl heading-color font-bold text-center mb-4'>Create Travel</div>
             <div className='flex flex-wrap xl:gap-8 gap-4'>
-                <div div className='flex-1 border border-blue-500 2xl:px-16 px-8 py-4 rounded-lg'>
+                <div className='flex-1 border border-blue-500 2xl:px-16 px-8 py-4 rounded-lg'>
                     <div className='text-xl font-semibold heading-color text-center'>Travel Information</div>
                     <div className='w-64'></div>
                     <Autocomplete

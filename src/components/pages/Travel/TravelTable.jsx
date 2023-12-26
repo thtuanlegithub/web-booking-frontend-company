@@ -35,7 +35,7 @@ function TravelTable(props) {
                     {TABLE_HEADS.map((head, index) => (
                         <th
                             key={head}
-                            className="cursor-pointer border-y border-blue-gray-100 p-4 transition-colors hover:bg-blue-50"
+                            className="border-y border-blue-gray-100 p-4 transition-colors hover:bg-blue-50"
                         >
                             <div
                                 className="text-md flex items-center justify-between gap-2 font-semibold leading-none heading-color"
@@ -45,7 +45,7 @@ function TravelTable(props) {
                         </th>
                     ))}
                     <th
-                        className="cursor-pointer border-y border-blue-gray-100  p-4 transition-colors hover:bg-blue-50"
+                        className="border-y border-blue-gray-100  p-4 transition-colors hover:bg-blue-50"
                     >
                         <div
                             className="text-md flex items-center justify-between gap-2 font-semibold leading-none heading-color">

@@ -40,8 +40,8 @@ function QuickReport(props) {
     switch (props.title) {
         case 'bestTour':
             return (
-                <div className='flex-1 flex flex-row drop-shadow-md'>
-                    <div className='left-quick-report h-48 flex-1 flex flex-col items-center justify-center px-2'>
+                <div className='flex-1 flex flex-row shadow-md border border-gray rounded-2xl'>
+                    <div className='left-quick-report shadow-lg h-48 flex-1 flex flex-col items-center justify-center px-2'>
                         <div className='data-left text-2xl font-bold text-center'>
                             {props.dataLeft}
                         </div>
@@ -61,8 +61,8 @@ function QuickReport(props) {
             )
         case 'cancelNum':
             return (
-                <div className='flex-1 flex flex-row drop-shadow-md'>
-                    <div className='left-quick-report h-48 flex-1 flex flex-col items-center justify-center px-2'>
+                <div className='flex-1 flex flex-row shadow-md border border-gray rounded-2xl'>
+                    <div className='left-quick-report shadow-lg h-48 flex-1 flex flex-col items-center justify-center px-2'>
                         <div className='data-left text-2xl font-bold text-center'>
                             {props.dataLeft}
                         </div>

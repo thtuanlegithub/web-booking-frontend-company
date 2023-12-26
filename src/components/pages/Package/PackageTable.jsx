@@ -39,40 +39,27 @@ function PackageTable(props) {
                     {TABLE_HEADS.map((head, index) => (
                         <th
                             key={head}
-                            className="cursor-pointer border-y border-blue-gray-100 p-4 transition-colors hover:bg-blue-50"
-                        >
-                            <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="text-md flex items-center justify-between gap-2 font-semibold leading-none heading-color"
-                            >
-                                {head}
-                                <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
-                            </Typography>
+                            className="font-semibold border-y border-blue-gray-100 p-4 transition-colors hover:bg-blue-50"
+                        >{head}
                         </th>
                     ))}
                     <th
-                        className="cursor-pointer border-y border-blue-gray-100  p-4 transition-colors hover:bg-blue-50"
+                        className="font-semibold border-y border-blue-gray-100  p-4 transition-colors hover:bg-blue-50"
                     >
-                        <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="text-md flex items-center justify-between gap-2 font-semibold leading-none heading-color"
-                        >
-                            Operations
-                        </Typography>
+                        Operations
                     </th>
                 </tr>
             </thead>
             <tbody>
                 {TABLE_ROWS.map(
                     (packageData, index) => {
-
-
                         return (
                             <tr key={packageData.id}>
                                 <td className="py-3 font-normal text-md pl-4 w-24!">
                                     {index + 1 + (currentPage - 1) * currentLimit}
+                                </td>
+                                <td className="py-3 font-normal text-md pl-4 w-24!">
+                                    {packageData.id}
                                 </td>
                                 <td className="font-normal text-md pl-4 w-64! truncate overflow-hidden">
                                     {packageData.packageName}

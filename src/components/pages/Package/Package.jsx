@@ -6,7 +6,7 @@ import { createPackage, updatePackage, deletePackage, fetchPackagePagination } f
 import handleDeletePackage from './PackageTable';
 // import ReactPaginate from 'react-paginate';
 import Pagination from '@mui/material/Pagination';
-const TABLE_HEADS = ['No.', 'Package Name', 'Package Type', 'Address'];
+const TABLE_HEADS = ['No.', 'Id', 'Package Name', 'Package Type', 'Address'];
 function Package(props) {
     const [isDisplayModal, setIsDisplayModal] = useState(false);
     const [listPackage, setListPackage] = useState([]);

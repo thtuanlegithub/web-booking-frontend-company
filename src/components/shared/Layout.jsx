@@ -4,13 +4,11 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 function Layout(props) {
     return (
-        <div>
-            <div className='flex h-full'>
-                <Sidebar />
-                <div className='flex-1'>
-                    <Header />
-                    <div className='p-4 h-screen'><Outlet /></div>
-                </div>
+        <div className='flex h-screen !overflow-hidden'>
+            <Sidebar />
+            <div className='flex-1  overflow-y-scroll'>
+                <Header />
+                <div className='p-4 h-max'><Outlet /></div>
             </div>
         </div>
     );

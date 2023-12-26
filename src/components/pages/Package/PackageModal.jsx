@@ -154,7 +154,6 @@ function PackageModal(props) {
                     <div className="mt-4 w-96 m-auto">
                         <label className='text-blue-800 font-medium text-md' htmlFor='packageName'>Package Name</label>
                         <div className="relative flex w-full flex-wrap items-stretch mt-1">
-
                             <input autoComplete='off'
                                 value={packageName}
                                 onChange={handlePackageName}
@@ -169,7 +168,7 @@ function PackageModal(props) {
                         <div className="mt-4 w-44 m-auto">
                             <label className='text-blue-800 font-medium text-md' htmlFor='packageType'>Package Type</label>
                             <div className="relative flex w-full flex-wrap items-stretch mt-1">
-                                < Select
+                                <Select
                                     value={packageType}
                                     onChange={handlePackageType}
                                     className="basic-single text-md w-64"
@@ -187,7 +186,7 @@ function PackageModal(props) {
                         <div className="mt-4 ml-4 w-48 m-auto">
                             <label className='text-blue-800 font-medium text-md' htmlFor='packageCity'>Package Address</label>
                             <div className="relative flex w-full flex-wrap items-stretch mt-1">
-                                < Select
+                                <Select
                                     value={packageAddress}
                                     onChange={handlePackageAddress}
                                     className="basic-single text-md w-64"

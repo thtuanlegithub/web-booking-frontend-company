@@ -26,9 +26,9 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         icon: <FaBusinessTime />
     },
     {
-        key: 'promotion',
-        label: 'Promotion',
-        path: '/promotion',
+        key: 'discount',
+        label: 'Discount',
+        path: '/discount',
         icon: <FaBullhorn />
     },
     {
@@ -44,12 +44,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         icon: <FaUserTag />
 
     },
-    {
-        key: 'invoice',
-        label: 'Invoice',
-        path: '/invoice',
-        icon: <FaMoneyCheckAlt />
-    }
+    // {
+    //     key: 'invoice',
+    //     label: 'Invoice',
+    //     path: '/invoice',
+    //     icon: <FaMoneyCheckAlt />
+    // }
 ]
 
 export const DASHBOARD_BOTTOM_LINKS = [
