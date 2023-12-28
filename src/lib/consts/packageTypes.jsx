@@ -34,5 +34,9 @@ export const PACKAGE_TYPES = [
     {
         value: "Mua sắm",
         label: "Mua sắm"
+    },
+    {
+        value: "Thư giãn",
+        label: "Thư giãn"
     }
 ]

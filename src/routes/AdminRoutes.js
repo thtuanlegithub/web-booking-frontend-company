@@ -18,6 +18,8 @@ import Support from '../components/pages/Support';
 import Layout from '../components/shared/Layout';
 import UpdateTour from '../components/pages/Tour/UpdateTour';
 import UpdateBooking from '../components/pages/Booking/UpdateBooking';
+import CreateDiscount from '../components/pages/Discount/CreateDiscount';
+import UpdateDiscount from '../components/pages/Discount/UpdateDiscount';
 function AdminRoutes(props) {
     return (
         <div>
@@ -34,6 +36,8 @@ function AdminRoutes(props) {
                         <Route path='create-travel' element={<CreateTravel />}></Route>
                         <Route path='update-travel/:travelId' element={<UpdateTravel />}></Route>
                         <Route path='discount' element={<Discount />}></Route>
+                        <Route path='create-discount' element={<CreateDiscount />}></Route>
+                        <Route path='update-discount' element={<UpdateDiscount />}></Route>
                         <Route path='booking' element={<Booking />}></Route>
                         <Route path='create-booking' element={<CreateBooking />}></Route>
                         <Route path='update-booking/:bookingId' element={<UpdateBooking />}></Route>

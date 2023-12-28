@@ -8,36 +8,8 @@ export const PACKAGE_ADDRESSES = [
         "value": "Điện Biên"
     },
     {
-        "label": "Lai Châu",
-        "value": "Lai Châu"
-    },
-    {
-        "label": "Sơn La",
-        "value": "Sơn La"
-    },
-    {
-        "label": "Yên Bái",
-        "value": "Yên Bái"
-    },
-    {
-        "label": "Hoà Bình",
-        "value": "Hoà Bình"
-    },
-    {
-        "label": "Thái Nguyên",
-        "value": "Thái Nguyên"
-    },
-    {
-        "label": "Lạng Sơn",
-        "value": "Lạng Sơn"
-    },
-    {
         "label": "Quảng Ninh",
         "value": "Quảng Ninh"
-    },
-    {
-        "label": "Bắc Giang",
-        "value": "Bắc Giang"
     },
     {
         "label": "Phú Thọ",
@@ -258,5 +230,9 @@ export const PACKAGE_ADDRESSES = [
     {
         "label": "Hội An",
         "value": "Hội An"
+    },
+    {
+        "label": "Nha Trang",
+        "value": "Nha Trang"
     }
 ];

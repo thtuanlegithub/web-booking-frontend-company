@@ -8,16 +8,16 @@ import { PACKAGE_ADDRESSES } from '../../../lib/consts/packageAddresses';
 import ImageUploader from '../../custom/ImageUploader';
 import { fetchPackageByAddressList } from '../../../services/packageServices';
 import { createTour } from '../../../services/tourServices';
+const TOUR_STATUS = [{ label: 'Incompleted', value: 'Incompleted' }, { label: 'Completed', value: 'Completed' }];
 
 function CreateTour(props) {
     // TOUR GENERAL INFORMATION
-    const TOUR_STATUS = ['Completed', 'Incompleted'];
     const [tourName, setTourName] = useState('');
     const [totalDay, setTotalDay] = useState(0);
     const [totalNight, setTotalNight] = useState(0);
     const [addressList, setAddressList] = useState([]);
     const [tourPrice, setTourPrice] = useState(0);
-    const [tourStatus, setTourStatus] = useState('Incompleted');
+    const [tourStatus, setTourStatus] = useState(TOUR_STATUS[0]);
     const handleTourName = (event) => {
         setTourName(event.target.value);
     }
