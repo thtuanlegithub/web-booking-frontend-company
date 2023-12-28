@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { PACKAGE_TYPES } from '../../../lib/consts/packageTypes';
 import { PACKAGE_ADDRESSES } from '../../../lib/consts/packageAddresses';
 import '../../styles/CustomModal.css';
-
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 const customStyles = {
     content: {
         top: '35%',
@@ -18,6 +19,16 @@ const customStyles = {
     },
 };
 function PackageModal(props) {
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenSnackbar(false);
+    };
+
     // Modal - Open - Close - Process
     const [modalIsOpen, setIsOpen] = React.useState(props.displayModal);
     function openModal() {
@@ -34,7 +45,7 @@ function PackageModal(props) {
 
 
     // Package Name
-    const [packageName, setPackageName] = useState("");
+    const [packageName, setPackageName] = useState(null);
     const [packageType, setPackageType] = useState(null);
     const [packageAddress, setPackageAddress] = useState(null);
     const [packageDescription, setPackageDescription] = useState("");
@@ -86,11 +97,20 @@ function PackageModal(props) {
 
     // Validate input
     const validateInput = () => {
+        if (packageName == null || packageName == '') {
+            setSnackbarMessage('Package Name has to be filled');
+            setOpenSnackbar(true);
+            return false;
+        }
         if (packageType == null) {
-            packageType.value = "";
+            setSnackbarMessage('Package Type has to be filled');
+            setOpenSnackbar(true);
+            return false;
         }
         if (packageAddress == null) {
-            packageAddress.value = "";
+            setSnackbarMessage('Package Address has to be filled');
+            setOpenSnackbar(true);
+            return false;
         }
         return true;
     }
@@ -107,6 +127,8 @@ function PackageModal(props) {
             props.onUpdatePackage(packageData);
             clearInput();
             closeModal();
+            alert("Update Package successfully!");
+
         }
         else {
             // open warning dialog
@@ -124,6 +146,7 @@ function PackageModal(props) {
             props.onCreatePackage(packageData);
             clearInput();
             closeModal();
+            alert("Create Package successfully!");
         }
         else {
             // open warning dialog
@@ -138,6 +161,7 @@ function PackageModal(props) {
 
     return (
         <div>
+
             <Modal
                 appElement={document.getElementById('root')}
                 isOpen={props.displayModal}
@@ -147,6 +171,16 @@ function PackageModal(props) {
                 overlayClassName="modal-overlay"
                 style={customStyles}
             >
+                <Snackbar
+                    className='!z-50'
+                    open={openSnackbar}
+                    autoHideDuration={6000} // Thời gian hiển thị (milliseconds)
+                    onClose={handleCloseSnackbar}
+                >
+                    <MuiAlert onClose={handleCloseSnackbar} severity="error" elevation={6} variant="filled">
+                        {snackbarMessage}
+                    </MuiAlert>
+                </Snackbar>
                 <form className='mx-8 my-4'>
                     <div className='heading-color text-xl font-bold block text-center'>
                         {props.action === 'CREATE' ? 'Create Package' : 'Update Package'}
@@ -154,7 +188,9 @@ function PackageModal(props) {
                     <div className="mt-4 w-96 m-auto">
                         <label className='text-blue-800 font-medium text-md' htmlFor='packageName'>Package Name</label>
                         <div className="relative flex w-full flex-wrap items-stretch mt-1">
-                            <input autoComplete='off'
+                            <input
+                                readOnly={props.action === 'UPDATE'}
+                                autoComplete='off'
                                 value={packageName}
                                 onChange={handlePackageName}
                                 maxLength={100}

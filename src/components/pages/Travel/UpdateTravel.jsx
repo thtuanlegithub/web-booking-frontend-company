@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { FaAngleDoubleLeft, FaCalendarDay } from 'react-icons/fa';
 import { Autocomplete, TextField } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -9,8 +9,11 @@ import dayjs from 'dayjs';
 import { Button } from '@mui/material';
 import '../../styles/Custom.css';
 import { fetchTravelById, updateTravel } from '../../../services/travelServices';
-
+import { fetchDiscountPagination } from '../../../services/discountServices';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 function UpdateTravel(props) {
+    let navigate = useNavigate();
 
     // Travel Information
     const [selectedTour, setSelectedTour] = useState(null);
@@ -25,20 +28,30 @@ function UpdateTravel(props) {
     useEffect(() => {
         fetchTourListOptions();
         fetchSelectedTravel();
+        fetchDiscountList();
     }, []);
     const { travelId } = useParams();
-
+    const fetchDiscountList = async () => {
+        let res = await fetchDiscountPagination(0, 0);
+        if (res && res.data && res.data.EC === '0') {
+            let discounts = res.data.DT;
+            setDiscountListOptions(discounts.map((item) => ({ label: item.id + " - " + item.discountName, value: item })))
+        }
+    }
     // Fetch Selected Travel Data
     const fetchSelectedTravel = async () => {
         let res = await fetchTravelById(travelId);
         if (res && res.data && res.data.EC === '0') {
             let travel = res.data.DT;
+            console.log("travel", travel);
             setSelectedTour({ label: travel.Tour.tourName, value: travel.Tour.id });
             setStartLocation(travel.startLocation);
             setStartDateTime(dayjs(travel.startDateTime));
             setMaxTicket(travel.maxTicket);
             setRemainTicket(travel.remainTicket);
-            setDiscount(travel.discount);
+            if (travel.Discount && travel.Discount.id) {
+                setDiscount({ label: travel.Discount.id + " - " + travel.Discount.discountName, value: travel.Discount });
+            }
             setTravelPrice(travel.travelPrice);
         }
     }
@@ -59,22 +72,107 @@ function UpdateTravel(props) {
     const handleRemainTicketChange = (event) => {
         setRemainTicket(event.target.value);
     }
+    const handleDiscountChange = (event, newValue) => {
+        setDiscount(newValue);
+        if (newValue && newValue.value) {
+            if (selectedTour && selectedTour.value) {
+                if (newValue.value.discountType == 'Percentage') {
+                    let newTravelPrice = selectedTourPrice * (100 - newValue.value.discountAmount) / 100;
+                    setTravelPrice(newTravelPrice);
+                }
+                else if (newValue.value.discountType == 'Amount') {
+                    let newTravelPrice = selectedTourPrice - newValue.value.discountAmount;
+                    setTravelPrice(newTravelPrice);
+                }
+                console.log("selectedTour.value: ", selectedTourPrice)
+            }
+        }
+        else {
+            setTravelPrice(selectedTourPrice);
+        }
+    }
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
 
+        setOpenSnackbar(false);
+    };
+    const validateInput = () => {
+        if (selectedTour == null) {
+            setSnackbarMessage('Tour Name has to be selected');
+            setOpenSnackbar(true);
+            return false;
+        }
+        if (startLocation == null || startLocation == '') {
+            setSnackbarMessage('Start Location has to be filled');
+            setOpenSnackbar(true);
+            return false;
+        }
+        if (startDateTime == null) {
+            setSnackbarMessage('Start Date Time has to be selected');
+            setOpenSnackbar(true);
+            return false;
+        }
+        if (maxTicket == 0 || maxTicket == null) {
+            setSnackbarMessage('Max Ticket has to be filled and larger than 0');
+            setOpenSnackbar(true);
+            return false;
+        }
+        if (remainTicket == 0 || remainTicket == null) {
+            setSnackbarMessage('Remain Ticket has to be filled and larger than 0');
+            setOpenSnackbar(true);
+            return false;
+        }
+        if (remainTicket > maxTicket) {
+            setSnackbarMessage('Max Ticket has to be larger than or equal remain ticket');
+            setOpenSnackbar(true);
+            return false;
+        }
+        if (discount == null) {
+            setDiscount({ label: '', value: '' });
+        }
+        return true;
+    }
     // Update Travel
     const handleUpdateTravel = async () => {
-        let travelData = {
-            id: travelId,
-            startLocation: startLocation,
-            startDateTime: startDateTime.format('YYYY-MM-DD HH:mm'),
-            maxTicket: maxTicket,
-            remainTicket: remainTicket,
-            travelPrice: travelPrice,
-            discountId: discount,
-            tourId: selectedTour.value
-        }
-        let res = await updateTravel(travelData);
-        if (res && res.data && res.data.EC === '0') {
-            console.log('update travel successfully');
+        if (validateInput()) {
+            if (discount) {
+                let travelData = {
+                    id: travelId,
+                    startLocation: startLocation,
+                    startDateTime: startDateTime.format('YYYY-MM-DD HH:mm'),
+                    maxTicket: maxTicket,
+                    remainTicket: remainTicket,
+                    travelPrice: travelPrice,
+                    discountId: discount.value.id,
+                    tourId: selectedTour.value
+                }
+                let res = await updateTravel(travelData);
+                if (res && res.data && res.data.EC === '0') {
+                    alert("Update Travel successfully");
+                    navigate('/travel');
+                }
+            }
+            else {
+                let travelData = {
+                    id: travelId,
+                    startLocation: startLocation,
+                    startDateTime: startDateTime.format('YYYY-MM-DD HH:mm'),
+                    maxTicket: maxTicket,
+                    remainTicket: remainTicket,
+                    travelPrice: travelPrice,
+                    discountId: null,
+                    tourId: selectedTour.value
+                }
+                let res = await updateTravel(travelData);
+                if (res && res.data && res.data.EC === '0') {
+                    alert("Update Travel successfully");
+                    navigate('/travel');
+                }
+            }
         }
     }
 
@@ -115,7 +213,12 @@ function UpdateTravel(props) {
                     setTravelPrice(data.tourPrice);
                 }
                 else {
-                    //
+                    if (discount.value.discountType === 'Percentage') {
+                        setTravelPrice((data.tourPrice) * (100 - discount.value.discountAmount) / 100)
+                    }
+                    else if (discount.value.discountType === 'Amount') {
+                        setTravelPrice((data.tourPrice) - (discount.value.discountAmount));
+                    }
                 }
                 setSelectedTourStatus(data.tourStatus);
                 setSelectedTourMainImageUrl(data.mainImage);
@@ -142,6 +245,7 @@ function UpdateTravel(props) {
         setSelectedTourMainImageUrl(null);
         setSelectedTourAdditionalImageUrls([]);
         setSelectedTourSchedule(null);
+        setTravelPrice(0);
     }
     const handleSelectedTourChange = (event, newValue) => {
         if (newValue) {
@@ -152,177 +256,191 @@ function UpdateTravel(props) {
         }
     }
     return (
-        <div className='flex flex-col max-h-full overflow-y-auto' >
-            <Link to='/travel' className='w-64 mb-4 text-md heading-color font-semibold btn-back p-2 cursor-pointer rounded-lg'>
-                <FaAngleDoubleLeft className='inline mr-2' />
-                <div className='inline'>Back to Travel Management</div>
-            </Link>
-            <div className='inline text-2xl heading-color font-bold text-center mb-4'>Update Travel</div>
-            <div className='flex flex-wrap xl:gap-8 gap-4'>
-                <div div className='flex-1 border border-blue-500 2xl:px-16 px-8 py-4 rounded-lg'>
-                    <div className='text-xl font-semibold heading-color text-center'>Travel Information</div>
-                    <div className='w-64'></div>
-                    <Autocomplete
-                        value={selectedTour}
-                        className='flex-1 !mt-4'
-                        options={tourListOptions}
-                        onChange={handleSelectedTourChange}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label='Tour Name'
-                            />
-                        )}
-                    />
-                    <TextField
-                        value={startLocation}
-                        onChange={handleStartLocationChange}
-                        className='!mt-4 flex-1 mx-4'
-                        label='Start Location'
-                        fullWidth />
-                    <div className='grid 2xl:grid-cols-2 grid-cols-1 gap-4 !mt-4'>
-                        <DateTimePicker label='Start date time'
-                            format='DD/MM/YYYY h:m A'
-                            value={startDateTime}
-                            onChange={handleStartDateTimeChange} />
-                        <div className='grid sm:grid-cols-2 grid-cols-1 gap-2'>
-                            <TextField
-                                value={maxTicket}
-                                onChange={handleMaxTicketChange}
-                                label='Max Ticket'
-                                type='number'
-                                inputProps={{ min: 1 }} />
-                            <TextField
-                                value={remainTicket}
-                                onChange={handleRemainTicketChange}
-                                label='Remain Ticket'
-                                type='number'
-                                inputProps={{ min: 0 }} />
-                        </div>
-                    </div>
-                    <Autocomplete
-                        className='flex-1 !mt-4'
-                        options={discountListOptions}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label='Discount'
-                            />
-                        )}
-                    />
-                    <TextField
-                        inputProps={{
-                            readOnly: true
-                        }}
-                        value={travelPrice}
-                        className='!mt-4 w-full bg-yellow-50'
-                        label='Travel Price' />
-                </div>
-                <div className='flex-1 border border-blue-500 px-8 py-4 rounded-lg'>
-                    <div className='text-xl font-semibold heading-color text-center'>Tour General Information</div>
-                    <div className='mt-4'>
+        <>
+            <Snackbar
+                className='!z-50'
+                open={openSnackbar}
+                autoHideDuration={6000} // Thời gian hiển thị (milliseconds)
+                onClose={handleCloseSnackbar}
+            >
+                <MuiAlert onClose={handleCloseSnackbar} severity="error" elevation={6} variant="filled">
+                    {snackbarMessage}
+                </MuiAlert>
+            </Snackbar>
+            <div className='flex flex-col max-h-full overflow-y-auto' >
+                <Link to='/travel' className='w-64 mb-4 text-md heading-color font-semibold btn-back p-2 cursor-pointer rounded-lg'>
+                    <FaAngleDoubleLeft className='inline mr-2' />
+                    <div className='inline'>Back to Travel Management</div>
+                </Link>
+                <div className='inline text-2xl heading-color font-bold text-center mb-4'>Update Travel</div>
+                <div className='flex flex-wrap xl:gap-8 gap-4'>
+                    <div div className='flex-1 border border-blue-500 2xl:px-16 px-8 py-4 rounded-lg'>
+                        <div className='text-xl font-semibold heading-color text-center'>Travel Information</div>
+                        <div className='w-64'></div>
+                        <Autocomplete
+                            value={selectedTour}
+                            className='flex-1 !mt-4'
+                            options={tourListOptions}
+                            onChange={handleSelectedTourChange}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label='Tour Name'
+                                />
+                            )}
+                        />
                         <TextField
-                            variant='filled'
-                            value={selectedTourName}
-                            label='Tour name'
+                            value={startLocation}
+                            onChange={handleStartLocationChange}
+                            className='!mt-4 flex-1 mx-4'
+                            label='Start Location'
+                            fullWidth />
+                        <div className='grid 2xl:grid-cols-2 grid-cols-1 gap-4 !mt-4'>
+                            <DateTimePicker label='Start date time'
+                                format='DD/MM/YYYY h:m A'
+                                value={startDateTime}
+                                onChange={handleStartDateTimeChange} />
+                            <div className='grid sm:grid-cols-2 grid-cols-1 gap-2'>
+                                <TextField
+                                    value={maxTicket}
+                                    onChange={handleMaxTicketChange}
+                                    label='Max Ticket'
+                                    type='number'
+                                    inputProps={{ min: 1 }} />
+                                <TextField
+                                    value={remainTicket}
+                                    onChange={handleRemainTicketChange}
+                                    label='Remain Ticket'
+                                    type='number'
+                                    inputProps={{ min: 0 }} />
+                            </div>
+                        </div>
+                        <Autocomplete
+                            value={discount}
+                            onChange={handleDiscountChange}
+                            className='flex-1 !mt-4'
+                            options={discountListOptions}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label='Discount'
+                                />
+                            )}
+                        />
+                        <TextField
                             inputProps={{
                                 readOnly: true
                             }}
-                            fullWidth />
+                            value={travelPrice}
+                            className='!mt-4 w-full bg-yellow-50'
+                            label='Travel Price' />
+                    </div>
+                    <div className='flex-1 border border-blue-500 px-8 py-4 rounded-lg'>
+                        <div className='text-xl font-semibold heading-color text-center'>Tour General Information</div>
+                        <div className='mt-4'>
+                            <TextField
+                                variant='filled'
+                                value={selectedTourName}
+                                label='Tour name'
+                                inputProps={{
+                                    readOnly: true
+                                }}
+                                fullWidth />
 
-                    </div>
-                    <div className='mt-4 flex'>
-                        <div className='flex-1 mr-2'>
-                            <TextField
-                                variant='filled'
-                                value={selectedTourTotalDay}
-                                type='number'
-                                label='Total day'
-                                inputProps={{ min: 1, readOnly: true }}
-                                fullWidth />
                         </div>
-                        <div className='flex-1'>
-                            <TextField
-                                variant='filled'
-                                value={selectedTourTotalNight}
-                                type='number'
-                                label='Total night'
-                                inputProps={{ min: 1, readOnly: true }}
-                                fullWidth />
+                        <div className='mt-4 flex'>
+                            <div className='flex-1 mr-2'>
+                                <TextField
+                                    variant='filled'
+                                    value={selectedTourTotalDay}
+                                    type='number'
+                                    label='Total day'
+                                    inputProps={{ min: 1, readOnly: true }}
+                                    fullWidth />
+                            </div>
+                            <div className='flex-1'>
+                                <TextField
+                                    variant='filled'
+                                    value={selectedTourTotalNight}
+                                    type='number'
+                                    label='Total night'
+                                    inputProps={{ min: 1, readOnly: true }}
+                                    fullWidth />
+                            </div>
                         </div>
-                    </div>
-                    <div className='mt-4'>
-                        <TextField
-                            variant='filled'
-                            value={selectedTourAddressList}
-                            label="Address List"
-                            inputProps={{ readOnly: true }}
-                            fullWidth
-                        />
-                    </div>
-                    <div className='flex flex-wrap'>
-                        <div className='mt-4 flex-1 mr-2'>
+                        <div className='mt-4'>
                             <TextField
                                 variant='filled'
-                                value={selectedTourPrice}
-                                type='money'
-                                label='Tour price'
-                                fullWidth
-                                inputProps={{ readOnly: true }} />
-                        </div>
-                        <div className='mt-4 flex-1'>
-                            <TextField
-                                variant='filled'
-                                value={selectedTourStatus}
-                                label="Tour Status"
+                                value={selectedTourAddressList}
+                                label="Address List"
                                 inputProps={{ readOnly: true }}
                                 fullWidth
                             />
                         </div>
-                    </div>
-                    <div className='mt-4'>
-                        <ReadOnlyImageGallery
-                            fetchMainImageUrl={selectedTourMainImageUrl}
-                            fetchAdditionalImageUrls={selectedTourAdditionalImageUrls} />
-                    </div>
-                    <div className='w-64'></div>
-                </div>
-                <div className='flex-1 border border-blue-500 px-8 py-4 rounded-lg'>
-                    <div className='text-xl font-semibold heading-color text-center'>Tour Schedule</div>
-                    {
-                        selectedTourSchedule && selectedTourSchedule.map((item) => (
-                            <div className='rounded-lg px-8 py-4 mt-4 mb-4 bg-blue-50'>
-                                <div className='text-lg font-bold'>
-                                    <div className='inline'>
-                                        <FaCalendarDay className='inline mr-2 mb-1' />
-                                        <div className='inline mr-2'>Ngày {item.dayIndex}: </div>
-                                    </div>
-                                    <div className='inline font-medium'>{item.daySummary}</div>
-                                </div>
-                                <div className='text-md font-medium'>
-                                    {item.Packages && item.Packages.map((itemPackage) => (
-                                        <div className='mt-2 ml-4'>
-                                            <div className='mr-4 inline'>•</div>
-                                            {itemPackage.packageName}
-                                        </div>
-                                    ))}
-                                </div>
+                        <div className='flex flex-wrap'>
+                            <div className='mt-4 flex-1 mr-2'>
+                                <TextField
+                                    variant='filled'
+                                    value={selectedTourPrice}
+                                    type='money'
+                                    label='Tour price'
+                                    fullWidth
+                                    inputProps={{ readOnly: true }} />
                             </div>
-                        ))
-                    }
+                            <div className='mt-4 flex-1'>
+                                <TextField
+                                    variant='filled'
+                                    value={selectedTourStatus}
+                                    label="Tour Status"
+                                    inputProps={{ readOnly: true }}
+                                    fullWidth
+                                />
+                            </div>
+                        </div>
+                        <div className='mt-4'>
+                            <ReadOnlyImageGallery
+                                fetchMainImageUrl={selectedTourMainImageUrl}
+                                fetchAdditionalImageUrls={selectedTourAdditionalImageUrls} />
+                        </div>
+                        <div className='w-64'></div>
+                    </div>
+                    <div className='flex-1 border border-blue-500 px-8 py-4 rounded-lg'>
+                        <div className='text-xl font-semibold heading-color text-center'>Tour Schedule</div>
+                        {
+                            selectedTourSchedule && selectedTourSchedule.map((item) => (
+                                <div className='rounded-lg px-8 py-4 mt-4 mb-4 bg-blue-50'>
+                                    <div className='text-lg font-bold'>
+                                        <div className='inline'>
+                                            <FaCalendarDay className='inline mr-2 mb-1' />
+                                            <div className='inline mr-2'>Ngày {item.dayIndex}: </div>
+                                        </div>
+                                        <div className='inline font-medium'>{item.daySummary}</div>
+                                    </div>
+                                    <div className='text-md font-medium'>
+                                        {item.Packages && item.Packages.map((itemPackage) => (
+                                            <div className='mt-2 ml-4'>
+                                                <div className='mr-4 inline'>•</div>
+                                                {itemPackage.packageName}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))
+                        }
 
-                    <div className='w-64'></div>
+                        <div className='w-64'></div>
+                    </div>
+                </div>
+                <div className='flex justify-center'>
+                    <Button
+                        className='!bg-green-500 !normal-case w-64 !bg-green-300 !mt-8 !mb-8'
+                        variant="contained"
+                        onClick={handleUpdateTravel}>
+                        Save
+                    </Button>
                 </div>
             </div>
-            <div className='flex justify-center'>
-                <Button
-                    className='!bg-green-500 !normal-case w-64 !bg-green-300 !mt-8 !mb-8'
-                    variant="contained"
-                    onClick={handleUpdateTravel}>
-                    Save
-                </Button>
-            </div>
-        </div>
+        </>
     );
 }
 

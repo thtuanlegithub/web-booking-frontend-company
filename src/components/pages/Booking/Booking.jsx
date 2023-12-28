@@ -5,23 +5,6 @@ import { deleteBooking, fetchBookingPagination } from '../../../services/booking
 import { Pagination } from '@mui/material';
 function Booking(props) {
     const TABLE_HEADS = ['No.', 'Id', 'Customer Name', 'Travel Id', 'Booking Date', 'Total Price', 'Status'];
-    const TABLE_ROWS = [
-        {
-            id: 1,
-            tourName: 'Tour 1',
-            startDay: '01/01/2024',
-            startLocation: 10000000,
-            bookingPrice: 1,
-            remain: '0/50'
-        },
-        {
-            id: 2,
-            tourName: 'Tour 2',
-            startDay: '01/01/2024',
-            startLocation: 10000000,
-            bookingPrice: 1,
-            remain: '0/50'
-        }];
     const [listBooking, setListBooking] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [currentLimit, setCurrentLimit] = useState(10);
