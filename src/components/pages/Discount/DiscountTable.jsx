@@ -63,34 +63,24 @@ function DiscountTable(props) {
                                     {index + 1 + (currentPage - 1) * currentLimit}
                                 </td>
                                 <td className="font-normal text-md pl-4 w-64! truncate overflow-hidden">
-                                    {discountData.Customer.customerName}
+                                    {discountData.discountName}
                                 </td>
                                 <td>
                                     <div className="font-normal text-md pl-4 w-48!">
-                                        {discountData.travelId}
+                                        {discountData.discountType}
                                     </div>
                                 </td>
                                 <td>
                                     <div className="font-normal text-md pl-4 w-48!">
-                                        {dayjs(discountData.createdAt).format('DD/MM/YYYY HH:mm A')}
+                                        {discountData.discountType === 'Percentage' &&
+                                            discountData.discountAmount + "%" ||
+                                            discountData.discountAmount}
                                     </div>
                                 </td>
                                 <td>
                                     <div className="font-normal text-md pl-4 w-48!">
-                                        {discountData.discountPrice}
+                                        {discountData.Travels.length}
                                     </div>
-                                </td>
-                                <td>
-                                    {
-                                        discountData.exportInvoice == true &&
-                                        <div className="font-medium text-md px-4 w-48! bg-green-100 py-2 rounded-lg">
-                                            Completed
-                                        </div> ||
-                                        <div className="font-medium text-md px-4 w-48! bg-red-100 py-2 rounded-lg">
-                                            Incompleted
-                                        </div>
-                                    }
-
                                 </td>
                                 <td>
                                     <div className="font-medium text-md pl-4 cursor-pointer hover:underline w-24!">

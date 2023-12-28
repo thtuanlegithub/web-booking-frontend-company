@@ -8,19 +8,25 @@ const ReadOnlyImageGallery = forwardRef((props, ref) => {
     const [gallery, setGallery] = useState([]);
 
     useEffect(() => {
-        console.log('main img url', props.fetchMainImageUrl);
-        if (props.fetchMainImageUrl) {
+        console.log('fetch main img url', props.fetchMainImageUrl);
+        console.log('additional image', props.fetchAdditionalImageUrls);
+        if (props.fetchMainImageUrl !== '/') {
             setMainImage({
                 dataUrl: props.fetchMainImageUrl,
                 file: ''
             });
+            if (props.fetchAdditionalImageUrls.length > 0 && props.fetchAdditionalImageUrls[0] !== '/') {
+                setGallery(props.fetchAdditionalImageUrls.map((item) => ({ dataUrl: item, file: '' })));
+            }
+        }
+        else if (props.fetchAdditionalImageUrls.length > 0 && props.fetchAdditionalImageUrls[0] !== '/') {
+            setGallery(props.fetchAdditionalImageUrls.map((item) => ({ dataUrl: item, file: '' })));
+            setMainImage(null);
         }
         else {
             setMainImage(null);
+            setGallery([]);
         }
-        console.log(props.fetchAdditionalImageUrls);
-        setGallery([]);
-        setGallery(props.fetchAdditionalImageUrls.map((item) => ({ dataUrl: item, file: '' })));
     }, [props.fetchMainImageUrl, props.fetchAdditionalImageUrls])
 
     return (

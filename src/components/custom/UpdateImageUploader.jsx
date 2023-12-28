@@ -113,9 +113,13 @@ const UpdateImageUploader = forwardRef((props, ref) => {
                 dataUrl: props.fetchMainImageUrl,
                 file: ''
             });
-            if (props.fetchAdditionalImageUrls.length > 0 && props.fetchAdditionalImageUrls[0] != '/') {
+            if (props.fetchAdditionalImageUrls.length > 0 && props.fetchAdditionalImageUrls[0] !== '/') {
                 setGallery(props.fetchAdditionalImageUrls.map((item) => ({ dataUrl: item, file: '' })));
             }
+        }
+        else if (props.fetchAdditionalImageUrls.length > 0 && props.fetchAdditionalImageUrls[0] != '/') {
+            setGallery(props.fetchAdditionalImageUrls.map((item) => ({ dataUrl: item, file: '' })));
+            setMainImage(null);
         }
         else {
             setMainImage(null);

@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { Button } from '@mui/material';
 import '../../styles/Custom.css';
 import { createTravel } from '../../../services/travelServices';
+import { fetchDiscountPagination } from '../../../services/discountServices';
 
 function CreateTravel(props) {
 
@@ -24,8 +25,15 @@ function CreateTravel(props) {
     const [travelPrice, setTravelPrice] = useState(0);
     useEffect(() => {
         fetchTourListOptions();
+        fetchDiscountList();
     }, []);
-
+    const fetchDiscountList = async () => {
+        let res = await fetchDiscountPagination(0, 0);
+        if (res && res.data && res.data.EC === '0') {
+            let discounts = res.data.DT;
+            setDiscountListOptions(discounts.map((item) => ({ label: item.id + " - " + item.discountName, value: item })))
+        }
+    }
     const handleStartLocationChange = (event) => {
         setStartLocation(event.target.value);
     }
@@ -42,7 +50,25 @@ function CreateTravel(props) {
     const handleRemainTicketChange = (event) => {
         setRemainTicket(event.target.value);
     }
-
+    const handleDiscountChange = (event, newValue) => {
+        setDiscount(newValue);
+        if (newValue && newValue.value) {
+            if (selectedTour && selectedTour.value) {
+                if (newValue.value.discountType == 'Percentage') {
+                    let newTravelPrice = selectedTourPrice * (100 - newValue.value.discountAmount) / 100;
+                    setTravelPrice(newTravelPrice);
+                }
+                else if (newValue.value.discountType == 'Amount') {
+                    let newTravelPrice = selectedTourPrice - newValue.value.discountAmount;
+                    setTravelPrice(newTravelPrice);
+                }
+                console.log("selectedTour.value: ", selectedTourPrice)
+            }
+        }
+        else {
+            setTravelPrice(selectedTourPrice);
+        }
+    }
     // Create Travel
     const handleCreateTravel = async () => {
         let travelData = {
@@ -51,7 +77,7 @@ function CreateTravel(props) {
             maxTicket: maxTicket,
             remainTicket: remainTicket,
             travelPrice: travelPrice,
-            discountId: discount,
+            discountId: discount.value.id,
             tourId: selectedTour.value
         }
         let res = await createTravel(travelData);
@@ -97,7 +123,12 @@ function CreateTravel(props) {
                     setTravelPrice(data.tourPrice);
                 }
                 else {
-                    //
+                    if (discount.value.discountType === 'Percentage') {
+                        setTravelPrice((data.tourPrice) * (100 - discount.value.discountAmount) / 100)
+                    }
+                    else if (discount.value.discountType === 'Amount') {
+                        setTravelPrice((data.tourPrice) - (discount.value.discountAmount));
+                    }
                 }
                 setSelectedTourStatus(data.tourStatus);
                 setSelectedTourMainImageUrl(data.mainImage);
@@ -119,11 +150,12 @@ function CreateTravel(props) {
         setSelectedTourTotalDay('');
         setSelectedTourTotalNight('');
         setSelectedTourAddressList('');
-        setSelectedTourPrice('');
+        setSelectedTourPrice(0);
         setSelectedTourStatus('');
         setSelectedTourMainImageUrl(null);
         setSelectedTourAdditionalImageUrls([]);
         setSelectedTourSchedule(null);
+        setTravelPrice(0);
     }
     const handleSelectedTourChange = (event, newValue) => {
         if (newValue) {
@@ -182,6 +214,7 @@ function CreateTravel(props) {
                         </div>
                     </div>
                     <Autocomplete
+                        onChange={handleDiscountChange}
                         className='flex-1 !mt-4'
                         options={discountListOptions}
                         renderInput={(params) => (

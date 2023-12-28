@@ -4,7 +4,7 @@ import TourTable from './TourTable';
 import { deleteTour, fetchTourPagination } from '../../../services/tourServices';
 import { Pagination } from '@mui/material';
 function Tour(props) {
-    const TABLE_HEADS = ['No.', 'Tour Name', 'Total Day', 'Total Night', 'Price', 'Status'];
+    const TABLE_HEADS = ['No.', 'Id', 'Tour Name', 'Total Day', 'Total Night', 'Price', 'Status'];
     const [listTour, setListTour] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [currentLimit, setCurrentLimit] = useState(10);
