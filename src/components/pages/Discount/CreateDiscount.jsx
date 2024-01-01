@@ -62,60 +62,53 @@ function CreateDiscount(props) {
                 <div className='inline'>Back to Discount Management</div>
             </Link>
             <div className='inline text-2xl heading-color font-bold text-center mb-4'>Create Discount</div>
-            <div className='flex flex-wrap xl:gap-8 gap-4'>
-                <div className='flex-1 border border-blue-500 2xl:px-16 px-8 py-4 rounded-lg'>
-                    <div className='text-lg font-semibold heading-color text-center'>Discount Information</div>
+            <div className='flex-1 mx-auto border border-blue-500 2xl:px-16 px-8 py-4 rounded-lg'>
+                <div className='text-lg font-semibold heading-color text-center'>Discount Information</div>
+                <TextField
+                    value={discountName}
+                    onChange={handleDiscountNameChange}
+                    className='!mt-4'
+                    label='Discount Name'
+                    required
+                    fullWidth />
+                <div className='flex flex-row'>
+                    <Autocomplete
+                        value={discountType}
+                        onChange={handleDiscountTypeChange}
+                        className='!mt-4 !w-64'
+                        label='Discount Type'
+                        required
+                        fullWidth
+                        options={DISCOUNT_TYPE}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Discount Type"
+                                required
+                            />
+                        )} />
                     <TextField
-                        value={discountName}
-                        onChange={handleDiscountNameChange}
-                        className='!mt-4'
-                        label='Discount Name'
+                        type='number'
+                        value={discountAmount}
+                        inputProps={{
+                            min: 0
+                        }}
+                        onChange={handleDiscountAmountChange}
+                        className='!mt-4 !ml-4 !w-64'
+                        label='Discount Amount'
                         required
                         fullWidth />
-                    <div className='flex flex-row'>
-                        <Autocomplete
-                            value={discountType}
-                            onChange={handleDiscountTypeChange}
-                            className='!mt-4'
-                            label='Discount Type'
-                            required
-                            fullWidth
-                            options={DISCOUNT_TYPE}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label="Discount Type"
-                                    required
-                                />
-                            )} />
-                        <TextField
-                            type='number'
-                            value={discountAmount}
-                            inputProps={{
-                                min: 0
-                            }}
-                            onChange={handleDiscountAmountChange}
-                            className='!mt-4 !ml-4'
-                            label='Discount Amount'
-                            required
-                            fullWidth />
-                    </div>
-                    <TextField
-                        value={discountDescription}
-                        onChange={handleDiscountDescriptionChange}
-                        className='!mt-4'
-                        label='Discount Description'
-                        multiline
-                        fullWidth
-                        rows={4}
-                        maxRows={8}
-                    />
-                    <div className='w-96'></div>
                 </div>
-                <div className='flex-1 border border-blue-500 2xl:px-16 px-8 py-4 rounded-lg'>
-                    <div className='text-lg font-semibold heading-color text-center'>List Travel Applied</div>
-                    <div className='w-96'></div>
-                </div>
+                <TextField
+                    value={discountDescription}
+                    onChange={handleDiscountDescriptionChange}
+                    className='!mt-4'
+                    label='Discount Description'
+                    multiline
+                    fullWidth
+                    rows={4}
+                    maxRows={8}
+                />
             </div>
             <div className='flex justify-center'>
                 <Button

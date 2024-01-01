@@ -1,5 +1,9 @@
 export const PACKAGE_TYPES = [
     {
+        value: "Tập trung",
+        label: "Tập trung"
+    },
+    {
         value: "Tham quan",
         label: "Tham quan"
     },

@@ -1,5 +1,7 @@
+// AdminRoutes.js
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from '../Auth/AuthContext';
 import Dashboard from '../components/pages/Dashboard';
 import Travel from '../components/pages/Travel/Travel';
 import CreateTravel from '../components/pages/Travel/CreateTravel';
@@ -7,12 +9,10 @@ import UpdateTravel from '../components/pages/Travel/UpdateTravel';
 import Tour from '../components/pages/Tour/Tour';
 import CreateTour from '../components/pages/Tour/CreateTour';
 import Package from '../components/pages/Package/Package';
-import Promotion from '../components/pages/Promotion';
 import Discount from '../components/pages/Discount/Discount';
 import Booking from '../components/pages/Booking/Booking';
 import CreateBooking from '../components/pages/Booking/CreateBooking';
 import Customer from '../components/pages/Customer/Customer';
-import Invoice from '../components/pages/Invoice';
 import Login from '../components/pages/Login';
 import Support from '../components/pages/Support';
 import Layout from '../components/shared/Layout';
@@ -20,36 +20,38 @@ import UpdateTour from '../components/pages/Tour/UpdateTour';
 import UpdateBooking from '../components/pages/Booking/UpdateBooking';
 import CreateDiscount from '../components/pages/Discount/CreateDiscount';
 import UpdateDiscount from '../components/pages/Discount/UpdateDiscount';
+import { useNavigate } from 'react-router-dom';
 function AdminRoutes(props) {
+    const { user } = useAuth();
+
     return (
-        <div>
-            <Router>
-                <Routes>
-                    <Route path='/' element={<Layout />}>
-                        <Route index element={<Dashboard />}></Route>
-                        <Route path='package' element={<Package />}></Route>
-                        <Route path='tour' element={<Tour />}>
-                        </Route>
-                        <Route path='create-tour' element={<CreateTour />}></Route>
-                        <Route path='update-tour/:tourId' element={<UpdateTour />}></Route>
-                        <Route path='travel' element={<Travel />}></Route>
-                        <Route path='create-travel' element={<CreateTravel />}></Route>
-                        <Route path='update-travel/:travelId' element={<UpdateTravel />}></Route>
-                        <Route path='discount' element={<Discount />}></Route>
-                        <Route path='create-discount' element={<CreateDiscount />}></Route>
-                        <Route path='update-discount' element={<UpdateDiscount />}></Route>
-                        <Route path='booking' element={<Booking />}></Route>
-                        <Route path='create-booking' element={<CreateBooking />}></Route>
-                        <Route path='update-booking/:bookingId' element={<UpdateBooking />}></Route>
-                        <Route path='customer' element={<Customer />}></Route>
-                        <Route path='support' element={<Support />}></Route>
-                        <Route path='invoice' element={<Invoice />}></Route>
-                    </Route>
-                    <Route path='/login' element={<Login />}>
-                    </Route>
-                </Routes>
-            </Router>
-        </div>
+        <Router>
+            <Routes>
+                <Route path='/login' element={<Login />} />
+                <Route
+                    path='/'
+                    element={user ?
+                        <Layout /> : <Navigate to='/login' replace />
+                    }>
+                    <Route index element={<Dashboard />} />
+                    <Route path='package' element={<Package />} />
+                    <Route path='tour' element={<Tour />} />
+                    <Route path='create-tour' element={<CreateTour />} />
+                    <Route path='update-tour/:tourId' element={<UpdateTour />} />
+                    <Route path='travel' element={<Travel />} />
+                    <Route path='create-travel' element={<CreateTravel />} />
+                    <Route path='update-travel/:travelId' element={<UpdateTravel />} />
+                    <Route path='discount' element={<Discount />} />
+                    <Route path='create-discount' element={<CreateDiscount />} />
+                    <Route path='update-discount' element={<UpdateDiscount />} />
+                    <Route path='booking' element={<Booking />} />
+                    <Route path='create-booking' element={<CreateBooking />} />
+                    <Route path='update-booking/:bookingId' element={<UpdateBooking />} />
+                    <Route path='customer' element={<Customer />} />
+                    <Route path='support' element={<Support />} />
+                </Route>
+            </Routes>
+        </Router>
     );
 }
 

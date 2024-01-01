@@ -41,14 +41,6 @@ function CustomerTable(props) {
                             </div>
                         </th>
                     ))}
-                    <th
-                        className="border-y border-blue-gray-100  p-4 transition-colors hover:bg-blue-50"
-                    >
-                        <div
-                            className="text-md flex items-center justify-between gap-2 font-semibold leading-none heading-color">
-                            Operations
-                        </div>
-                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -78,18 +70,6 @@ function CustomerTable(props) {
                                 <td>
                                     <div className="font-normal text-md pl-4 w-48!">
                                         {customerData.customerAccountId}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div className="font-medium text-md pl-4 cursor-pointer hover:underline w-24!">
-                                        <Link to={`/update-customer/${customerData.id}`}>
-                                            <IconButton aria-label="edit" size="medium" color="primary" onClick={() => handleSelectCustomer(customerData.id)}>
-                                                <EditIcon fontSize="inherit" />
-                                            </IconButton>
-                                        </Link>
-                                        <IconButton aria-label="delete" size="medium" color="error" onClick={() => handleDeleteCustomer(customerData)}>
-                                            <DeleteIcon fontSize="inherit" />
-                                        </IconButton>
                                     </div>
                                 </td>
                             </tr>

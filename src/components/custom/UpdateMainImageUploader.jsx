@@ -46,7 +46,7 @@ const UpdateImageUploader = forwardRef((props, ref) => {
                 await props.onMainImageUpload(mainImageId);
             }
             else {
-                console.log(">>> main image not change/ exists, main image: ", mainImage);
+                console.log(">>> main image not change, main image: ", mainImage);
                 await props.onMainImageUpload(props.fetchMainImageUrl);
             }
         }
@@ -54,7 +54,9 @@ const UpdateImageUploader = forwardRef((props, ref) => {
             console.log(">>> main image is removed");
             await props.onMainImageUpload('/');
         }
-
+        const paymentImageChangeCall = [];
+        paymentImageChangeCall.push('/');
+        await props.onMainImageChangeCall(paymentImageChangeCall);
     };
 
     useImperativeHandle(ref, () => ({

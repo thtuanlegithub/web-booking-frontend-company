@@ -6,8 +6,14 @@ import { DASHBOARD_BOTTOM_LINKS, DASHBOARD_SIDEBAR_LINKS } from '../../lib/const
 import { Link, useLocation } from 'react-router-dom';
 import '../styles/Color.css';
 import '../styles/Sidebar.css';
+import { useAuth } from '../../Auth/AuthContext';
 const linkClasses = 'flex items-center gap-2 font-regular mx-2 px-3 py-3 text-lg hover:no-underline hover:rounded-2xl sidebar-menu-btn'
 function Sidebar(props) {
+    const { logout } = useAuth();
+    const handleLogout = () => {
+        logout();
+
+    }
     return (
         <div className='flex flex-col sidebar-menu w-64 p-3 text-white'>
             <div className='flex items-center place-content-center gap-2 px-1'>
@@ -22,7 +28,8 @@ function Sidebar(props) {
                 {DASHBOARD_BOTTOM_LINKS.map((item) => (
                     <SidebarLink key={item.key} item={item} />
                 ))}
-                <div className={classNames('text-red-500 cursor-pointer mb-16', linkClasses)}>
+                <div className={classNames('text-red-500 cursor-pointer mb-16', linkClasses)}
+                    onClick={handleLogout}>
                     <span className='text-xl mr-3 ml-2'>
                         <HiOutlineLogout />
                     </span>

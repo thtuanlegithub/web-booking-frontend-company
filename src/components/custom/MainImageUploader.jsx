@@ -46,11 +46,13 @@ const MainImageUploader = forwardRef((props, ref) => {
         else {
             await props.onMainImageUpload('/');
         }
+        const paymentImageChangeCall = [];
+        paymentImageChangeCall.push('/');
+        await props.onMainImageChangeCall(paymentImageChangeCall);
     };
 
     useImperativeHandle(ref, () => ({
-        handleUploadImages: handleUploadImages,
-        setMainImage: setMainImage
+        handleUploadImages: handleUploadImages
     }));
 
     return (

@@ -177,6 +177,7 @@ function UpdateTour(props) {
         setOpenSnackbar(false);
     };
     const validateInput = () => {
+        let invalidInput = false;
         if (tourName == null || tourName == "") {
             setSnackbarMessage('Tour Name has to be filled');
             setOpenSnackbar(true);
@@ -211,18 +212,24 @@ function UpdateTour(props) {
             if (!summary.trim()) {
                 setSnackbarMessage(`Day ${dayIndex + 1} summary cannot be empty.`);
                 setOpenSnackbar(true);
-                return false;
+                invalidInput = true;
             }
         });
+        if (invalidInput) {
+            return false;
+        }
         tourSchedule.forEach((day, dayIndex) => {
             day.forEach((packageItem, packageIndex) => {
                 if (!packageItem) {
                     setSnackbarMessage(`Package ${packageIndex + 1} in Day ${dayIndex + 1} cannot be empty.`);
                     setOpenSnackbar(true);
-                    return false;
+                    invalidInput = true;
                 }
             });
         });
+        if (invalidInput) {
+            return false;
+        }
         return true;
     }
     const fetchUpdateTour = async () => {

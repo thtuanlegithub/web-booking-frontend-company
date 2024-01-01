@@ -122,7 +122,7 @@ function CreateTravel(props) {
             if (discount) {
                 let travelData = {
                     startLocation: startLocation,
-                    startDateTime: startDateTime.format('DD-MM-YYYY HH:mm'),
+                    startDateTime: startDateTime.format('MM-DD-YYYY HH:mm'),
                     maxTicket: maxTicket,
                     remainTicket: remainTicket,
                     travelPrice: travelPrice,
@@ -138,7 +138,7 @@ function CreateTravel(props) {
             else {
                 let travelData = {
                     startLocation: startLocation,
-                    startDateTime: startDateTime.format('DD-MM-YYYY HH:mm'),
+                    startDateTime: startDateTime.format('MM-DD-YYYY HH:mm'),
                     maxTicket: maxTicket,
                     remainTicket: remainTicket,
                     travelPrice: travelPrice,
