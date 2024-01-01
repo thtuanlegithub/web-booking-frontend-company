@@ -11,8 +11,9 @@ import { fetchPackageByAddressList } from '../../../services/packageServices';
 import { createTour } from '../../../services/tourServices';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import formatCurrency from '../../utils/formatCurrency';
+import removeCommas from '../../utils/removeCommas';
 const TOUR_STATUS = [{ label: 'Incompleted', value: 'Incompleted' }, { label: 'Completed', value: 'Completed' }];
-
 function CreateTour(props) {
     const navigate = useNavigate();
 
@@ -36,7 +37,7 @@ function CreateTour(props) {
         setAddressList(newValue);
     }
     const handleTourPrice = (event) => {
-        setTourPrice(event.target.value);
+        setTourPrice(removeCommas(event.target.value));
     }
     const handleTourStatus = (event, newValue) => {
         setTourStatus(newValue);
@@ -328,6 +329,7 @@ function CreateTour(props) {
                         <div className='flex flex-wrap'>
                             <div className='mt-4 flex-1 mr-2'>
                                 <TextField
+                                    value={formatCurrency(tourPrice)}
                                     type='money'
                                     label='Tour price'
                                     onChange={handleTourPrice}

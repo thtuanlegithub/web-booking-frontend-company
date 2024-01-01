@@ -8,6 +8,7 @@ import ConfirmDialog from '../../custom/ConfirmDialog';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { fetchTravelPagination } from '../../../services/travelServices';
+import formatCurrency from '../../utils/formatCurrency';
 function TourTable(props) {
     const currentPage = props.currentPage;
     const currentLimit = props.currentLimit;
@@ -135,7 +136,7 @@ function TourTable(props) {
                                     </td>
                                     <td>
                                         <div className="font-normal text-md pl-4 w-48!">
-                                            {tourData.tourPrice}
+                                            {formatCurrency(tourData.tourPrice)}
                                         </div>
                                     </td>
                                     <td>

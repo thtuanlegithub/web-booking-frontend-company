@@ -8,6 +8,7 @@ import UpdateMainImageUploader from '../../custom/UpdateMainImageUploader';
 import { fetchBookingById, updateBooking } from '../../../services/bookingServices';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import formatCurrency from '../../utils/formatCurrency';
 const BOOKING_STATUS = [
     { label: 'Paid', value: 'Paid' },
     { label: 'Unpaid', value: 'Unpaid' },
@@ -312,7 +313,7 @@ function UpdateBooking(props) {
                                         readOnly: true
                                     }}
                                     variant='filled'
-                                    value={bookingPrice}
+                                    value={formatCurrency(bookingPrice)}
                                     className='!mt-4'
                                     label='Booking Price'
                                     fullWidth
@@ -321,7 +322,7 @@ function UpdateBooking(props) {
                                     inputProps={
                                         { readOnly: true }
                                     }
-                                    value={bookingPrice}
+                                    value={formatCurrency(bookingPrice)}
                                     className='!mt-4'
                                     label='Booking Price'
                                     fullWidth

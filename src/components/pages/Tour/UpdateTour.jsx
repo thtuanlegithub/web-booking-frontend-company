@@ -11,6 +11,8 @@ import { fetchPackageByAddressList } from '../../../services/packageServices';
 import { fetchTourById, updateTour } from '../../../services/tourServices';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import formatCurrency from '../../utils/formatCurrency';
+import removeCommas from '../../utils/removeCommas';
 function UpdateTour(props) {
     const navigate = useNavigate();
 
@@ -36,7 +38,7 @@ function UpdateTour(props) {
         setAddressList(newValue);
     }
     const handleTourPrice = (event) => {
-        setTourPrice(event.target.value);
+        setTourPrice(removeCommas(event.target.value));
     }
     const handleTourStatus = (event, newValue) => {
         setTourStatus(newValue);
@@ -383,7 +385,7 @@ function UpdateTour(props) {
                         <div className='flex flex-wrap'>
                             <div className='mt-4 flex-1 mr-2'>
                                 <TextField
-                                    value={tourPrice}
+                                    value={formatCurrency(tourPrice)}
                                     type='money'
                                     label='Tour price'
                                     onChange={handleTourPrice}

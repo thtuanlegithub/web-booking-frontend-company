@@ -104,7 +104,10 @@ function Package(props) {
                     <div className="flex flex-1">
                         <select
                             onChange={handleCategoryChange}
-                            defaultValue={""} id="dropdown-button" className="z-10 py-2.5 px-4 py-2 text-sm font-medium text-gray-900 bg-blue-100 border border-gray-300 rounded-s-lg focus:ring-2 focus:outline-none focus:ring-2" type="button">
+                            defaultValue={""}
+                            id="dropdown-button"
+                            className="z-10 py-2.5 px-4 py-2 text-sm font-medium text-gray-900 bg-blue-100 border border-gray-300 rounded-s-lg focus:ring-2 focus:outline-none focus:ring-2"
+                            type="button">
                             <option value="" disabled>Select Categories</option>
                             <option value="Name">Package Name</option>
                             <option value="Id">Package Id</option>

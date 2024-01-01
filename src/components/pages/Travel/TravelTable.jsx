@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import ConfirmDialog from '../../custom/ConfirmDialog';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import formatCurrency from '../../utils/formatCurrency';
 function TravelTable(props) {
     const currentPage = props.currentPage;
     const currentLimit = props.currentLimit;
@@ -123,6 +124,9 @@ function TravelTable(props) {
                                         {index + 1 + (currentPage - 1) * currentLimit}
                                     </td>
                                     <td className="font-normal text-md pl-4 w-64! truncate overflow-hidden">
+                                        {travelData.id}
+                                    </td>
+                                    <td className="font-normal text-md pl-4 w-64! truncate overflow-hidden">
                                         {travelData.Tour.tourName}
                                     </td>
                                     <td>
@@ -137,7 +141,7 @@ function TravelTable(props) {
                                     </td>
                                     <td>
                                         <div className="font-normal text-md pl-4 w-48!">
-                                            {travelData.travelPrice}
+                                            {formatCurrency(travelData.travelPrice)}
                                         </div>
                                     </td>
                                     <td>

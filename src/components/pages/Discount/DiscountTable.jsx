@@ -63,6 +63,9 @@ function DiscountTable(props) {
                                     {index + 1 + (currentPage - 1) * currentLimit}
                                 </td>
                                 <td className="font-normal text-md pl-4 w-64! truncate overflow-hidden">
+                                    {discountData.id}
+                                </td>
+                                <td className="font-normal text-md pl-4 w-64! truncate overflow-hidden">
                                     {discountData.discountName}
                                 </td>
                                 <td>

@@ -10,6 +10,8 @@ import { Button } from '@mui/material';
 import '../../styles/Custom.css';
 import { fetchTravelById, updateTravel } from '../../../services/travelServices';
 import { fetchDiscountPagination } from '../../../services/discountServices';
+import formatCurrency from '../../utils/formatCurrency';
+import removeCommas from '../../utils/removeCommas';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 function UpdateTravel(props) {
@@ -331,7 +333,7 @@ function UpdateTravel(props) {
                             inputProps={{
                                 readOnly: true
                             }}
-                            value={travelPrice}
+                            value={formatCurrency(travelPrice)}
                             className='!mt-4 w-full bg-yellow-50'
                             label='Travel Price' />
                     </div>
@@ -381,7 +383,7 @@ function UpdateTravel(props) {
                             <div className='mt-4 flex-1 mr-2'>
                                 <TextField
                                     variant='filled'
-                                    value={selectedTourPrice}
+                                    value={formatCurrency(selectedTourPrice)}
                                     type='money'
                                     label='Tour price'
                                     fullWidth
