@@ -116,6 +116,7 @@ function UpdateBooking(props) {
         setOpenSnackbar(false);
     };
     const validateInput = () => {
+        let touristInvalid = false;
         if (bookingStatus == null) {
             setSnackbarMessage('Booking status has to be selected');
             setOpenSnackbar(true);
@@ -140,9 +141,13 @@ function UpdateBooking(props) {
             if (touristItem == '') {
                 setSnackbarMessage(`Tourist ${touristIndex} has to be filled`);
                 setOpenSnackbar(true);
+                touristInvalid = true;
                 return false;
             }
         })
+        if (touristInvalid) {
+            return false;
+        }
         if (selectedTravel == null) {
             setSnackbarMessage('Travel has to be selected');
             setOpenSnackbar(true);
@@ -262,6 +267,9 @@ function UpdateBooking(props) {
     const handleExportInvoice = async () => {
         handleUpdateBooking();
         setExportInvoice(true);
+    }
+    const handlePrintInvoice = () => {
+        navigate(`/invoice/${bookingId}`);
     }
     return (
         <>
@@ -425,18 +433,21 @@ function UpdateBooking(props) {
                                     onChange={handlePaymentNoteChange}
                                     label='Payment Note'
                                     className='!my-4' />
-                                    <div
-                                        className='rounded-md position-relative'
-                                        id="mainImage"
-                                        style={{
-                                            objectFit: 'cover',
-                                            backgroundImage: `url(${paymentImageUrl})`,
-                                            backgroundSize: 'cover',
-                                            backgroundPosition: 'center',
-                                            height: '250px',
-                                            width: 'auto',
-                                        }}
-                                    ></div>
+                                    {paymentImageUrl != '/'
+                                        &&
+                                        <div
+                                            className='rounded-md position-relative'
+                                            id="mainImage"
+                                            style={{
+                                                objectFit: 'cover',
+                                                backgroundImage: `url(${paymentImageUrl})`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center',
+                                                height: '250px',
+                                                width: 'auto',
+                                            }}
+                                        ></div>
+                                    }
                                 </>
                                 ||
                                 <>
@@ -461,6 +472,7 @@ function UpdateBooking(props) {
                                     onClick={handleExportInvoice}>Export Invoice</Button>
                                 ||
                                 <Button
+                                    onClick={handlePrintInvoice}
                                     className='!bg-blue-400 !normal-case w-48 float-right !mt-8 !mb-8'
                                     variant="contained">Print Invoice</Button>
                             }

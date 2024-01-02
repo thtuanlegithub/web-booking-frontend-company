@@ -20,13 +20,14 @@ import UpdateTour from '../components/pages/Tour/UpdateTour';
 import UpdateBooking from '../components/pages/Booking/UpdateBooking';
 import CreateDiscount from '../components/pages/Discount/CreateDiscount';
 import UpdateDiscount from '../components/pages/Discount/UpdateDiscount';
-import { useNavigate } from 'react-router-dom';
+import Invoice from '../components/pages/Invoice';
 function AdminRoutes(props) {
     const { user } = useAuth();
 
     return (
         <Router>
             <Routes>
+                <Route path='/invoice/:bookingId' element=<Invoice /> />
                 <Route path='/login' element={<Login />} />
                 <Route
                     path='/'

@@ -132,12 +132,12 @@ function CreateBooking(props) {
             setOpenSnackbar(true);
             return false;
         }
-        let touristInvalid = true;
+        let touristInvalid = false;
         touristList.forEach((touristItem, touristIndex) => {
             if (touristItem == '') {
                 setSnackbarMessage(`Tourist ${touristIndex} has to be filled`);
                 setOpenSnackbar(true);
-                touristInvalid = false;
+                touristInvalid = true;
                 return false;
             }
         })

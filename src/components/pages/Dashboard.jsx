@@ -1,15 +1,88 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import classNames from 'classnames';
 import { FaClipboardList, FaDollarSign, FaShoppingCart, FaUserTag } from 'react-icons/fa';
 import '../styles/Dashboard.css';
-
+import { getTourPlanning } from '../../services/dashboardServices';
+import { fetchCustomerPagination } from '../../services/customerServices';
+import { fetchBookingPagination } from '../../services/bookingServices';
+import formatCurrency from '../utils/formatCurrency';
 function Dashboard(props) {
     const [overviewTourPlanning, setOverviewTourPlanning] = useState(0);
+    const [totalRevenue, setTotalRevenue] = useState(0);
+    const [bookingNeedResolving, setBookingNeedResolving] = useState(0);
+    const [totalCustomer, setTotalCustomer] = useState(0);
     const [mostBookingTourId, setMostBookingTourId] = useState(150);
     const [numberTravelOfMostBooking, setNumberTravelOfMostBooking] = useState(6);
     const [numberCancelBooking, setNumberCancelBooking] = useState(7);
     const [moneyRefund, setMoneyRefund] = useState(7400000);
+    useEffect(() => {
+        fetchTourPlanning();
+        fetchBookingNeedResolving();
+        fetchTotalRevenue();
+        fetchTotalCustomer();
+        fetchMostBookingTourId();
+    }, [])
+    const fetchTourPlanning = async () => {
+        let res = await getTourPlanning();
+        if (res && res.data && res.data.EC == '0') {
+            console.log(res);
+            setOverviewTourPlanning(res.data.DT);
+        }
+    }
+    const fetchBookingNeedResolving = async () => {
+        let res = await fetchBookingPagination(0, 0);
+        if (res && res.data && res.data.EC == '0') {
+            console.log(res.data.DT);
+            const count = res.data.DT.filter(item => item.exportInvoice === false).length;
+            setBookingNeedResolving(count);
+        }
+    }
+    const fetchTotalRevenue = async () => {
+        let res = await fetchBookingPagination(0, 0);
+        if (res && res.data && res.data.EC == '0') {
+            const totalBookingPrice = res.data.DT.reduce((accumulator, item) => {
+                if (item.exportInvoice === true) {
+                    return accumulator + +item.bookingPrice;
+                } else {
+                    return accumulator;
+                }
+            }, 0);
+            setTotalRevenue(totalBookingPrice);
+        }
+    }
+    const fetchTotalCustomer = async () => {
+        let res = await fetchCustomerPagination(0, 0);
+        if (res && res.data && res.data.EC === '0') {
+            console.log(res.data.DT);
+            setTotalCustomer(res.data.DT.length);
+        }
+    }
+    const fetchMostBookingTourId = async () => {
+        let res = await fetchBookingPagination(0, 0);
+        if (res && res.data && res.data.EC == '0') {
+            const bookings = res.data.DT;
+            const tourIdCounts = bookings.reduce((counts, booking) => {
+                const tourId = booking?.Travel?.tourId;
+                if (tourId !== undefined) {
+                    counts[tourId] = (counts[tourId] || 0) + 1;
+                }
+                return counts;
+            }, {});
+
+            // Tìm TourId có số lần xuất hiện nhiều nhất
+            let mostFrequentTourId;
+            let maxCount = 0;
+            for (const tourId in tourIdCounts) {
+                if (tourIdCounts[tourId] > maxCount) {
+                    maxCount = tourIdCounts[tourId];
+                    mostFrequentTourId = tourId;
+                }
+            }
+
+            setMostBookingTourId(mostFrequentTourId);
+        }
+    }
     return (
         <div className='dashboard min-w-max max-h-full overflow-y-auto'>
             <div className='dashboard-overview-bg px-8 pt-4 pb-8 mx-4 drop-shadow-lg'>
@@ -17,9 +90,9 @@ function Dashboard(props) {
                 <div className='heading-color text-lg font-regular'>A quick data overview of the Tour Management.</div>
                 <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 2xl:gap-12 gap-16 mx-8 mt-4 justify-evenly'>
                     <QuickOverview title='Tour Planning' data={overviewTourPlanning} content="Tours" overviewmap='tourplan' />
-                    <QuickOverview title='Month Revenue' data={overviewTourPlanning} content="VND" overviewmap='revenue' />
-                    <QuickOverview title='New Bookings' data={overviewTourPlanning} content="Need Resolving" overviewmap='booking' />
-                    <QuickOverview title='Customers' data={overviewTourPlanning} content="Need Support" overviewmap='customer' />
+                    <QuickOverview title='Total Revenue' data={formatCurrency(totalRevenue)} content="VND" overviewmap='revenue' />
+                    <QuickOverview title='New Bookings' data={bookingNeedResolving} content="Need Resolving" overviewmap='booking' />
+                    <QuickOverview title='Customers' data={totalCustomer} content="New Customers" overviewmap='customer' />
                 </div>
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-3 statistics'>
@@ -27,7 +100,14 @@ function Dashboard(props) {
                     <QuickReport title="bestTour" dataLeft={mostBookingTourId} dataRight={numberTravelOfMostBooking} />
                     <QuickReport title="cancelNum" dataLeft={numberCancelBooking} dataRight={moneyRefund} />
                 </div>
-                <div className='col-span-2 chart-booking rounded-lg mx-4 my-8 drop-shadow-md'>
+                <div className='col-span-2 chart-booking rounded-lg mx-4 my-8 drop-shadow-md'
+                    style={{
+                        objectFit: 'fit',
+                        backgroundImage: `url(${'./chartplaceholder.svg'})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        width: 'auto',
+                    }}>
                 </div>
             </div>
         </div>

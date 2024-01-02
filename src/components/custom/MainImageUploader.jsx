@@ -46,7 +46,7 @@ const MainImageUploader = forwardRef((props, ref) => {
         else {
             await props.onMainImageUpload('/');
         }
-        const paymentImageChangeCall = [];
+        let paymentImageChangeCall = [];
         paymentImageChangeCall.push('/');
         await props.onMainImageChangeCall(paymentImageChangeCall);
     };
