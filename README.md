@@ -35,3 +35,11 @@ The Tour Management section of our web application provides powerful tools for a
 
 - **Authentication:**
   - JSON Web Tokens (JWT)
+
+
+## User Interface
+
+![Dashboard](/public/dashboard.svg)
+![Tour](/public/managetour.png)
+![Update Tour](/public/updatetour.png)
+![Update Travel](/public/updatetravel.png)

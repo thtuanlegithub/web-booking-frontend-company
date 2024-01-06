@@ -2,6 +2,7 @@ import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'rea
 import { generateUniqueId } from '../utils/generateUniqueId';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { app } from '../../config/firebase';
+import { isImageFile, isFileSizeValid } from '../utils/validateImageutils';
 
 const UpdateImageUploader = forwardRef((props, ref) => {
     const [mainImage, setMainImage] = useState(null);
@@ -9,7 +10,7 @@ const UpdateImageUploader = forwardRef((props, ref) => {
     const handleMainImageChange = (event) => {
         const file = event.target.files[0];
 
-        if (file) {
+        if (isImageFile(file) && isFileSizeValid(file)) {
             const reader = new FileReader();
 
             reader.onload = () => {
@@ -19,13 +20,19 @@ const UpdateImageUploader = forwardRef((props, ref) => {
             reader.readAsDataURL(file);
             // setGallery([]); // Reset gallery when changing the main image
         }
+        else if (!isImageFile(file)) {
+            alert("Please select image!");
+        }
+        else if (!isFileSizeValid(file)) {
+            alert("Please select image with size <= 2MB")
+        }
     };
 
     const handleGalleryImageChange = (event) => {
         const file = event.target.files[0];
 
-        if (file) {
-            if (gallery.length < 6) {
+        if (isImageFile(file) && isFileSizeValid(file)) {
+            if (gallery.length < 3) {
                 const reader = new FileReader();
 
                 reader.onload = () => {
@@ -34,8 +41,14 @@ const UpdateImageUploader = forwardRef((props, ref) => {
 
                 reader.readAsDataURL(file);
             } else {
-                alert('You can upload up to 6 images.');
+                alert('You can upload maximum 3 additional images');
             }
+        }
+        else if (!isImageFile(file)) {
+            alert("Please select image!");
+        }
+        else if (!isFileSizeValid(file)) {
+            alert("Please select image with size <= 2MB")
         }
     };
 
@@ -103,6 +116,7 @@ const UpdateImageUploader = forwardRef((props, ref) => {
 
     useImperativeHandle(ref, () => ({
         handleUploadImages: handleUploadImages,
+        mainImage: mainImage
     }));
 
     useEffect(() => {
@@ -195,7 +209,6 @@ const UpdateImageUploader = forwardRef((props, ref) => {
                 src="../miniImgPlaceholder.svg"
                 alt="Additional Image"
                 style={{ objectFit: 'cover', width: '50px', height: '50px', margin: '5px', cursor: 'pointer' }}
-                onClick={() => document.getElementById('galleryImageInput').click()}
             />
         </div>
     );

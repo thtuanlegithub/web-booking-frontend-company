@@ -23,8 +23,8 @@ function CreateTravel(props) {
     const [discountListOptions, setDiscountListOptions] = useState([]);
     const [startLocation, setStartLocation] = useState('');
     const [startDateTime, setStartDateTime] = useState(dayjs().add(7, 'day'));
-    const [maxTicket, setMaxTicket] = useState(null);
-    const [remainTicket, setRemainTicket] = useState(null);
+    const [maxTicket, setMaxTicket] = useState(1);
+    const [remainTicket, setRemainTicket] = useState(1);
     const [discount, setDiscount] = useState(null);
     const [travelPrice, setTravelPrice] = useState(0);
     useEffect(() => {
@@ -39,12 +39,26 @@ function CreateTravel(props) {
         }
     }
     const handleStartLocationChange = (event) => {
-        setStartLocation(event.target.value);
+        if (event.target.value.length > 100) {
+            setSnackbarMessage("Start location max length is 100");
+            setOpenSnackbar(true);
+        }
+        else {
+            setStartLocation(event.target.value);
+        }
     }
 
     const handleStartDateTimeChange = (newValue) => {
-        setStartDateTime(dayjs(newValue));
-        console.log('startDateTime', startDateTime);
+        const currentDay = dayjs();
+        const sevenDaysAfter = currentDay.add(6, 'day');
+        if (dayjs(newValue).isAfter(sevenDaysAfter)) {
+            setStartDateTime(dayjs(newValue));
+        }
+        else {
+            setStartDateTime(dayjs(newValue));
+            setSnackbarMessage("Please select a date that is more than or equal 1 week from the current date.");
+            setOpenSnackbar(true);
+        }
     }
 
     const handleMaxTicketChange = (event) => {
@@ -97,6 +111,15 @@ function CreateTravel(props) {
             setSnackbarMessage('Start Date Time has to be selected');
             setOpenSnackbar(true);
             return false;
+        }
+        if (startDateTime) {
+            const currentDay = dayjs();
+            const sevenDaysAfter = currentDay.add(6, 'day');
+            if (dayjs(startDateTime).isBefore(sevenDaysAfter)) {
+                setSnackbarMessage('Please select a date that is more than or equal 1 week from the current date.');
+                setOpenSnackbar(true);
+                return false;
+            }
         }
         if (maxTicket == 0 || maxTicket == null) {
             setSnackbarMessage('Max Ticket has to be filled and larger than 0');

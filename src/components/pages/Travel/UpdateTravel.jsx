@@ -63,8 +63,16 @@ function UpdateTravel(props) {
     }
 
     const handleStartDateTimeChange = (newValue) => {
-        setStartDateTime(newValue);
-        console.log('startDateTime', startDateTime);
+        const currentDay = dayjs();
+        const sevenDaysAfter = currentDay.add(6, 'day');
+        if (dayjs(newValue).isAfter(sevenDaysAfter)) {
+            setStartDateTime(dayjs(newValue));
+        }
+        else {
+            setStartDateTime(dayjs(newValue));
+            setSnackbarMessage("Please select a date that is more than or equal 1 week from the current date.");
+            setOpenSnackbar(true);
+        }
     }
 
     const handleMaxTicketChange = (event) => {

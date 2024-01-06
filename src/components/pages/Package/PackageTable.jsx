@@ -38,7 +38,6 @@ function PackageTable(props) {
         }
     }
     const validateDelete = (id) => {
-        // Check exists in Tour
         if (listPackageInTourId.includes(id)) {
             return false;
         }

@@ -1,11 +1,12 @@
 import { Autocomplete, Button, TextField, TextareaAutosize } from '@mui/material';
 import React, { useState } from 'react';
 import { FaAngleDoubleLeft } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createDiscount } from '../../../services/discountServices';
 const DISCOUNT_TYPE = [{ label: 'Amount', value: 'Amount' },
 { label: 'Percentage', value: 'Percentage' }]
 function CreateDiscount(props) {
+    const navigate = useNavigate();
     const [discountName, setDiscountName] = useState('');
     const [discountType, setDiscountType] = useState(null);
     const [discountAmount, setDiscountAmount] = useState(0);
@@ -52,7 +53,8 @@ function CreateDiscount(props) {
 
         let res = await createDiscount(discountData);
         if (res && res.data && res.data.EC === '0') {
-            console.log("create discount res:", res);
+            alert("Create Discount successfully");
+            navigate('/discount');
         }
     }
     return (

@@ -70,10 +70,22 @@ function PackageModal(props) {
 
     // Handle Input
     const handlePackageName = (event) => {
-        setPackageName(event.target.value);
+        if (event.target.value.length > 100) {
+            setSnackbarMessage('Package Name max length is 100');
+            setOpenSnackbar(true);
+        }
+        else {
+            setPackageName(event.target.value);
+        }
     }
     const handlePackageDescription = (event) => {
-        setPackageDescription(event.target.value);
+        if (event.target.value.length > 500) {
+            setSnackbarMessage('Package Description max length is 500');
+            setOpenSnackbar(true);
+        }
+        else {
+            setPackageDescription(event.target.value);
+        }
     }
     const handlePackageType = (selectedOption) => {
         if (selectedOption === null) {
@@ -193,7 +205,6 @@ function PackageModal(props) {
                                 autoComplete='off'
                                 value={packageName}
                                 onChange={handlePackageName}
-                                maxLength={100}
                                 id='packageName'
                                 type="text"
                                 placeholder="Enter package name"

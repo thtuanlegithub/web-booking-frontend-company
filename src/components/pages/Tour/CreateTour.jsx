@@ -31,13 +31,25 @@ function CreateTour(props) {
         setTotalDay(event.target.value);
     }
     const handleTotalNight = (event) => {
-        setTotalNight(event.target.value);
+        if ((event.target.value - totalDay) > 1 || (event.target.value - totalDay) < -1) {
+            setOpenSnackbar(true);
+            setSnackbarMessage("Total Night and Today Day cannot differ larger than 1")
+        }
+        else {
+            setTotalNight(event.target.value);
+        }
     }
     const handleAddressList = (event, newValue) => {
         setAddressList(newValue);
     }
     const handleTourPrice = (event) => {
-        setTourPrice(removeCommas(event.target.value));
+        if (isNaN(removeCommas(event.target.value))) {
+            setSnackbarMessage("Tour price has to be a number");
+            setOpenSnackbar(true);
+        }
+        else {
+            setTourPrice(removeCommas(event.target.value));
+        }
     }
     const handleTourStatus = (event, newValue) => {
         setTourStatus(newValue);
@@ -80,11 +92,17 @@ function CreateTour(props) {
     };
 
     const handleDaySummaryChange = (dayIndex, value) => {
-        setDaySummaries(prevDaySummaries => {
-            const newDaySummaries = [...prevDaySummaries];
-            newDaySummaries[dayIndex] = value;
-            return newDaySummaries;
-        });
+        if (value.length > 100) {
+            setSnackbarMessage("Day summary max length is 100");
+            setOpenSnackbar(true);
+        }
+        else {
+            setDaySummaries(prevDaySummaries => {
+                const newDaySummaries = [...prevDaySummaries];
+                newDaySummaries[dayIndex] = value;
+                return newDaySummaries;
+            });
+        }
     };
 
     const handleAddPackage = (dayIndex) => {
@@ -127,12 +145,16 @@ function CreateTour(props) {
     const handleAddDay = () => {
         setTourSchedule(prevTourSchedule => [...prevTourSchedule, []]);
         setDaySummaries(prevDaySummaries => [...prevDaySummaries, '']);
+        setTotalDay(daySummaries.length + 1);
+        setTotalNight(daySummaries.length + 1);
     };
 
     const handleRemoveDay = (dayIndex) => {
         setTourSchedule(prevTourSchedule => {
             const newTourSchedule = [...prevTourSchedule];
             newTourSchedule.splice(dayIndex, 1);
+            setTotalDay(daySummaries.length - 1);
+            setTotalNight(daySummaries.length - 1);
             return newTourSchedule;
         });
         setDaySummaries(prevDaySummaries => {
@@ -140,6 +162,8 @@ function CreateTour(props) {
             newDaySummaries.splice(dayIndex, 1);
             return newDaySummaries;
         });
+        setTotalDay(totalDay - 1);
+        setTotalNight(totalNight - 1);
     };
 
     // CREATE TOUR
@@ -186,13 +210,13 @@ function CreateTour(props) {
             setOpenSnackbar(true);
             return false;
         }
-        if (totalDay == null || totalDay == 0) {
-            setSnackbarMessage('Total day has to be filled and larger than 0');
+        if (totalDay == null || (totalDay == 0 && totalNight != 1)) {
+            setSnackbarMessage('Total day has to be larger than 0');
             setOpenSnackbar(true);
             return false;
         }
-        if (totalNight == null || totalNight == 0) {
-            setSnackbarMessage('Total night has to be filled and larger than 0');
+        if (totalNight == null || totalNight == 0 && totalDay != 1) {
+            setSnackbarMessage('Total night has to be larger than 0');
             setOpenSnackbar(true);
             return false;
         }
@@ -231,6 +255,11 @@ function CreateTour(props) {
             });
         });
         if (invalidInput) {
+            return false;
+        }
+        if (tourStatus && tourStatus.value == 'Completed' && imageUploaderRef.mainImage == null) {
+            setSnackbarMessage('Completed tour must have main image');
+            setOpenSnackbar(true);
             return false;
         }
         return true;
@@ -286,6 +315,7 @@ function CreateTour(props) {
                         <div className='text-lg font-semibold heading-color text-center'>Tour General Information</div>
                         <div className='mt-4'>
                             <TextField
+                                autoComplete='off'
                                 fullWidth
                                 label='Tour name'
                                 placeholder='Enter tour name'
@@ -295,19 +325,21 @@ function CreateTour(props) {
                         <div className='mt-4 flex'>
                             <div className='flex-1 mr-2'>
                                 <TextField
+                                    value={totalDay}
                                     type='number'
                                     label='Total day'
                                     onChange={handleTotalDay}
-                                    inputProps={{ min: 1 }}
+                                    inputProps={{ min: 0, readOnly: true }}
                                     fullWidth
                                     required />
                             </div>
                             <div className='flex-1'>
                                 <TextField
+                                    value={totalNight}
                                     type='number'
                                     label='Total night'
                                     onChange={handleTotalNight}
-                                    inputProps={{ min: 1 }}
+                                    inputProps={{ min: 0 }}
                                     fullWidth
                                     required />
                             </div>

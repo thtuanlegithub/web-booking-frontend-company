@@ -32,13 +32,26 @@ function UpdateTour(props) {
         setTotalDay(event.target.value);
     }
     const handleTotalNight = (event) => {
-        setTotalNight(event.target.value);
+        if ((event.target.value - totalDay) > 1 || (event.target.value - totalDay) < -1) {
+            setOpenSnackbar(true);
+            setSnackbarMessage("Total Night and Today Day cannot differ larger than 1")
+        }
+        else {
+            setTotalNight(event.target.value);
+        }
     }
     const handleAddressList = (event, newValue) => {
         setAddressList(newValue);
     }
     const handleTourPrice = (event) => {
-        setTourPrice(removeCommas(event.target.value));
+        if (isNaN(removeCommas(event.target.value))) {
+            setSnackbarMessage("Tour price has to be a number");
+            setOpenSnackbar(true);
+        }
+        else {
+            setTourPrice(removeCommas(event.target.value));
+        }
+
     }
     const handleTourStatus = (event, newValue) => {
         setTourStatus(newValue);
@@ -80,11 +93,17 @@ function UpdateTour(props) {
     };
 
     const handleDaySummaryChange = (dayIndex, value) => {
-        setDaySummaries(prevDaySummaries => {
-            const newDaySummaries = [...prevDaySummaries];
-            newDaySummaries[dayIndex] = value;
-            return newDaySummaries;
-        });
+        if (value.length > 100) {
+            setSnackbarMessage("Day summary max length is 100");
+            setOpenSnackbar(true);
+        }
+        else {
+            setDaySummaries(prevDaySummaries => {
+                const newDaySummaries = [...prevDaySummaries];
+                newDaySummaries[dayIndex] = value;
+                return newDaySummaries;
+            });
+        }
     };
 
     const handleAddPackage = (dayIndex) => {
@@ -127,12 +146,16 @@ function UpdateTour(props) {
     const handleAddDay = () => {
         setTourSchedule(prevTourSchedule => [...prevTourSchedule, []]);
         setDaySummaries(prevDaySummaries => [...prevDaySummaries, '']);
+        setTotalDay(daySummaries.length + 1);
+        setTotalNight(daySummaries.length + 1);
     };
 
     const handleRemoveDay = (dayIndex) => {
         setTourSchedule(prevTourSchedule => {
             const newTourSchedule = [...prevTourSchedule];
             newTourSchedule.splice(dayIndex, 1);
+            setTotalDay(daySummaries.length - 1);
+            setTotalNight(daySummaries.length - 1);
             return newTourSchedule;
         });
         setDaySummaries(prevDaySummaries => {
@@ -185,13 +208,13 @@ function UpdateTour(props) {
             setOpenSnackbar(true);
             return false;
         }
-        if (totalDay == null || totalDay == 0) {
-            setSnackbarMessage('Total day has to be filled and larger than 0');
+        if (totalDay == null || (totalDay == 0 && totalNight != 1)) {
+            setSnackbarMessage('Total day has to be larger than 0');
             setOpenSnackbar(true);
             return false;
         }
-        if (totalNight == null || totalNight == 0) {
-            setSnackbarMessage('Total night has to be filled and larger than 0');
+        if (totalNight == null || totalNight == 0 && totalDay != 1) {
+            setSnackbarMessage('Total night has to be larger than 0');
             setOpenSnackbar(true);
             return false;
         }
@@ -229,6 +252,11 @@ function UpdateTour(props) {
                 }
             });
         });
+        if (tourStatus && tourStatus.value == 'Completed' && imageUploaderRef.mainImage == null) {
+            setSnackbarMessage('Completed tour must have main image');
+            setOpenSnackbar(true);
+            return false;
+        }
         if (invalidInput) {
             return false;
         }
@@ -353,7 +381,7 @@ function UpdateTour(props) {
                                     type='number'
                                     label='Total day'
                                     onChange={handleTotalDay}
-                                    inputProps={{ min: 1 }}
+                                    inputProps={{ min: 0, readOnly: true }}
                                     fullWidth
                                     required />
                             </div>
@@ -363,7 +391,7 @@ function UpdateTour(props) {
                                     type='number'
                                     label='Total night'
                                     onChange={handleTotalNight}
-                                    inputProps={{ min: 1 }}
+                                    inputProps={{ min: 0 }}
                                     fullWidth
                                     required />
                             </div>
